@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>暖居書桌 WarmDesk — 專注、心流與陪伴</title>
+  <style>
+    :root {
+      --bg: #FAF6F0;
+      --bg-grad-1: rgba(200, 125, 85, 0.08);
+      --bg-grad-2: rgba(107, 142, 118, 0.08);
+      --surface: #FFFFFF;
+      --surface-soft: #F5EFE6;
+      --surface-hover: #EFE6DA;
+      --border: #E8DEC8;
+      --text: #3D312B;
+      --text-muted: #7D6E62;
+      --accent: #C87D55;
+      --accent-hover: #B56B44;
+      --accent-soft: #F4E4D8;
+      --green: #5B8C6B;
+      --green-soft: #E8F1EB;
+      --danger: #C45348;
+      --danger-soft: #FBEAE8;
+      --gold: #C88A1E;
+      --gold-soft: #FDF3DF;
+      --boss: #9E3B33;
+      --boss-soft: #FCECEB;
+      --shadow: 0 8px 24px -10px rgba(61, 49, 43, 0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    html.dark {
+      --bg: #1B1714;
+      --bg-grad-1: rgba(200, 125, 85, 0.12);
+      --bg-grad-2: rgba(107, 142, 118, 0.10);
+      --surface: #25201C;
+      --surface-soft: #2E2823;
+      --surface-hover: #38312B;
+      --border: #3E362F;
+      --text: #F2EAE1;
+      --text-muted: #A99A8D;
+      --accent: #D68D65;
+      --accent-hover: #E09C76;
+      --accent-soft: #3B2B22;
+      --green: #7EA58B;
+      --green-soft: #243329;
+      --danger: #DF6E63;
+      --danger-soft: #3B2422;
+      --gold: #E4B254;
+      --gold-soft: #3A301D;
+      --boss: #E36C62;
+      --boss-soft: #3D2220;
+      --shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 12% 0%, var(--bg-grad-1), transparent 42%),
+        radial-gradient(circle at 88% 12%, var(--bg-grad-2), transparent 42%);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+    .hidden { display: none !important; }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C87D55, #A45D3A);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .brand-title span { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .save-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+      cursor: pointer;
+    }
+    .save-pill.warn {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-chip strong { color: var(--text); }
+    .streak-chip {
+      background: var(--gold-soft);
+      border-color: color-mix(in srgb, var(--gold) 35%, transparent);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:hover { background: var(--surface-soft); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #FFF; }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-green { background: var(--green); border-color: var(--green); color: #FFF; }
+    .btn-boss { background: var(--boss); border-color: var(--boss); color: #FFF; }
+    .btn-danger {
+      background: var(--danger-soft);
+      border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+      color: var(--danger);
+    }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 8px; }
+    .btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+    /* Container & Tabs */
+    .container { max-width: 1120px; margin: 0 auto; padding: 18px 16px 52px; }
+
+    .nav-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: var(--surface-soft);
+      padding: 5px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .nav-tab {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 10px 8px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .nav-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-boss { background: var(--boss-soft); color: var(--boss); }
+    .badge-green { background: var(--green-soft); color: var(--green); }
+    .badge-gold { background: var(--gold-soft); color: var(--gold); }
+
+    /* Cards & Layout */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .quote-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+    }
+
+    .quote-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .quote-text { font-size: 15px; font-weight: 600; margin: 0; }
+
+    .desk-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (min-width: 860px) {
+      .desk-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    }
+
+    .stack { display: flex; flex-direction: column; gap: 18px; }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .section-desc { font-size: 12px; color: var(--text-muted); margin: 3px 0 0; }
+
+    /* Inputs */
+    input[type="text"], input[type="number"], select, textarea {
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+    /* Progress Bars */
+    .progress-track {
+      height: 8px;
+      background: var(--surface-soft);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 12px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+    .progress-fill.boss-fill {
+      background: linear-gradient(90deg, #D9534F, #9E3B33);
+    }
+
+    .inline-panel {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* Boss Banner */
+    .boss-banner {
+      background: var(--boss-soft);
+      border: 1px solid color-mix(in srgb, var(--boss) 35%, transparent);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .preset-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .color-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .color-dot {
+      width: 24px; height: 24px; border-radius: 999px;
+      border: 2px solid transparent; cursor: pointer;
+    }
+    .color-dot.selected { border-color: var(--text); transform: scale(1.12); }
+
+    .task-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .task-form input[type="text"] { flex: 1 1 180px; }
+    .task-form select { width: auto; min-width: 116px; flex: 0 0 auto; }
+
+    /* Slot Cards */
+    .slot-list { display: flex; flex-direction: column; gap: 10px; }
+    .slot-card {
+      display: flex;
+      align-items: stretch;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .slot-body { flex: 1; padding: 10px 12px; min-width: 0; }
+    .slot-empty { font-size: 12px; color: var(--text-muted); padding: 6px 2px; }
+    .slot-bar {
+      width: 90px;
+      flex-shrink: 0;
+      padding: 10px 8px;
+      color: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .slot-bar-name { font-size: 13px; font-weight: 700; word-break: break-word; line-height: 1.25; }
+    .slot-bar-hint { font-size: 10px; opacity: 0.85; margin-top: 3px; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+    .task-item.is-boss {
+      border-color: color-mix(in srgb, var(--boss) 45%, transparent);
+      background: color-mix(in srgb, var(--boss-soft) 45%, var(--surface));
+    }
+    .task-item:last-child { margin-bottom: 0; }
+
+    .task-check {
+      width: 20px; height: 20px; border-radius: 6px;
+      border: 2px solid var(--accent); background: transparent;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; color: #FFF; font-size: 12px; font-weight: 700; padding: 0;
+    }
+    .task-check.done { background: var(--green); border-color: var(--green); }
+    .task-text { flex: 1; font-size: 14px; word-break: break-word; }
+    .task-text.done { text-decoration: line-through; color: var(--text-muted); }
+
+    .icon-btn {
+      border: none; background: transparent; color: var(--text-muted);
+      cursor: pointer; padding: 4px 6px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    }
+    .icon-btn:hover { background: var(--surface-hover); color: var(--text); }
+    .icon-btn.boss-active { color: var(--boss); background: var(--boss-soft); }
+
+    /* Plant & Mini Pet */
+    .plant-layout { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .plant-pot-box {
+      width: 124px; height: 134px; border-radius: 16px;
+      background: linear-gradient(180deg, var(--surface-soft), color-mix(in srgb, var(--accent-soft) 55%, var(--surface)));
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin: 0 auto;
+    }
+    .plant-info { flex: 1; min-width: 200px; }
+    .plant-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+    .mini-stat {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    .mini-stat span { display: block; color: var(--text-muted); font-size: 11px; }
+    .mini-stat strong { font-size: 14px; }
+
+    /* Focus Card */
+    .focus-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .focus-btn {
+      border: none; border-radius: 14px; padding: 14px; text-align: left;
+      color: #FFF; cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; gap: 8px;
+      transition: transform 0.1s ease, filter 0.15s ease;
+    }
+    .focus-btn:active { transform: scale(0.98); }
+    .focus-btn:hover { filter: brightness(1.05); }
+    .focus-btn.deep { background: linear-gradient(135deg, #6B8E76, #4F725A); }
+    .focus-btn.quick { background: linear-gradient(135deg, #C87D55, #A8603C); }
+    .focus-btn-title { font-size: 14px; font-weight: 700; display: block; }
+    .focus-btn-sub { font-size: 11px; opacity: 0.9; display: block; margin-top: 2px; }
+    .focus-btn-num {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+    .custom-min-row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+
+    /* AI Cam */
+    .cam-preview-wrap {
+      position: relative; margin-top: 10px; border-radius: 12px;
+      overflow: hidden; background: #111; aspect-ratio: 16 / 9; max-height: 200px;
+    }
+    .cam-preview-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+    /* Garden & Interactive Pet Playground */
+    .pet-stage {
+      position: relative;
+      border-radius: 16px;
+      padding: 20px 16px 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--gold-soft) 55%, var(--surface)) 0%, color-mix(in srgb, var(--green-soft) 80%, var(--surface)) 72%, color-mix(in srgb, var(--green) 26%, var(--surface)) 100%);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .pet-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      max-width: 90%;
+    }
+
+    .pet-avatar-btn {
+      position: relative;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 4px;
+      transition: transform 0.15s ease;
+    }
+    .pet-avatar-btn:active { transform: scale(0.92); }
+    .pet-hop { animation: petHop 0.45s ease; }
+    @keyframes petHop {
+      0% { transform: translateY(0) scale(1); }
+      35% { transform: translateY(-14px) scale(1.06); }
+      70% { transform: translateY(2px) scale(0.96); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    .float-heart {
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      font-size: 18px;
+      color: #E05A6D;
+      pointer-events: none;
+      animation: floatUp 0.9s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); }
+      100% { opacity: 0; transform: translate(-50%, -42px) scale(1.3); }
+    }
+
+    .garden-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .seed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .seed-card {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .seed-card.active { border-color: var(--accent); background: var(--accent-soft); }
+
+    /* Review Chart & Interrupt Causes */
+    .chart-wrap {
+      position: relative;
+      height: 190px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: end;
+      padding: 20px 6px 26px;
+      background: var(--surface-soft);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-top: 12px;
+    }
+    .chart-col {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+    }
+    .chart-bar {
+      width: 64%;
+      max-width: 34px;
+      border-radius: 8px 8px 3px 3px;
+      background: var(--accent);
+      min-height: 4px;
+    }
+    .chart-bar.healthy { background: var(--green); }
+    .chart-bar.overwork { background: var(--danger); }
+    .chart-val { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+    .chart-lbl { position: absolute; bottom: -22px; font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+    .reason-pill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .reason-pill {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .reason-pill.selected {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Fullscreen Focus Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .ring-wrap { position: relative; width: 224px; height: 224px; margin: 12px auto; }
+    .ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .ring-time { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; }
+
+    .overlay-boss-box {
+      width: 100%;
+      max-width: 360px;
+      background: var(--boss-soft);
+      border: 1px solid color-mix(in srgb, var(--boss) 35%, transparent);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    /* Modal & Toast */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 90;
+      background: rgba(0, 0, 0, 0.55);
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-box {
+      width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .toast {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      z-index: 100; background: var(--text); color: var(--bg);
+      padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); max-width: 92vw; text-align: center;
+    }
+
+    .sway { transform-origin: 60px 108px; animation: gentleSway 4.5s ease-in-out infinite; }
+    @keyframes gentleSway {
+      0%, 100% { transform: rotate(-1.5deg); }
+      50% { transform: rotate(1.5deg); }
+    }
+    .breathe { animation: breatheAnim 3.2s ease-in-out infinite; }
+    @keyframes breatheAnim {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 10.5L12 3l9 7.5"></path>
+            <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"></path>
+            <path d="M12 17v-5"></path>
+            <path d="M12 14c-2.2 0-3.5-1.2-3.5-3 2 0 3.5 1 3.5 3z"></path>
+            <path d="M12 13c2.2 0 3.5-1.2 3.5-3-2 0-3.5 1-3.5 3z"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">暖居書桌 <span>WarmDesk</span></div>
+          <div class="brand-sub">
+            <span id="header-date"></span>
+            <button id="btn-save-status" class="save-pill" type="button">● 已自動存檔</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="stat-chip streak-chip tabular" id="header-streak-chip" title="每日達標累積連擊，每5次無中斷獲得1個護盾">
+          🔥 0 日連擊 ｜ 🛡 0
+        </div>
+        <div class="stat-chip tabular">
+          今日 <strong id="header-focus-mins">0</strong> 分鐘 ｜ 中斷 <strong id="header-interrupts">0</strong>
+        </div>
+        <button id="btn-open-storage" class="btn" type="button">存檔與設定</button>
+        <button id="btn-rain" class="btn" type="button">雨聲環境音</button>
+        <button id="btn-theme" class="btn" type="button">晨光書桌</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" data-tab="desk" type="button">書桌日常</button>
+      <button class="nav-tab" data-tab="garden" type="button">花園與寵物 <span id="garden-badge" class="badge">0</span></button>
+      <button class="nav-tab" data-tab="review" type="button">每日復盤</button>
+    </nav>
+
+    <!-- TAB 1: DESK -->
+    <section id="tab-desk">
+      <!-- Encouragement Quote -->
+      <div class="card quote-card">
+        <div style="flex:1; min-width:0;">
+          <div class="quote-label">鼓勵角落・給自己的話</div>
+          <p id="quote-display" class="quote-text"></p>
+          <form id="quote-form" class="hidden" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+            <input id="quote-input" type="text" maxlength="100" placeholder="寫一句鼓勵自己的話..." style="flex:1 1 220px;" />
+            <button class="btn btn-primary btn-sm" type="submit">保存</button>
+            <button id="btn-quote-cancel" class="btn btn-sm" type="button">取消</button>
+          </form>
+        </div>
+        <button id="btn-quote-edit" class="btn btn-sm" type="button">改寫這句話</button>
+      </div>
+
+      <div class="desk-grid">
+        <!-- Left Column: Daily Core Tasks, Boss & Slots -->
+        <div class="stack">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">
+                  今日核心活動
+                  <span id="task-limit-badge" class="badge tabular">0/5 項活動</span>
+                </h2>
+                <p class="section-desc">可將最難的 1 項設為「今日 Boss」，點右側色條可編輯時段</p>
+              </div>
+              <button id="btn-toggle-new-slot" class="btn btn-primary btn-sm" type="button">+ 新增時段</button>
+            </div>
+
+            <!-- Inline New Slot Creator -->
+            <form id="new-slot-panel" class="inline-panel hidden">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong style="font-size:13px;">建立新時段螢光色條</strong>
+                <button id="btn-close-new-slot" class="icon-btn" type="button">✕</button>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input id="new-slot-name" type="text" maxlength="20" placeholder="輸入時段名稱，如：Self Study、Home..." />
+                <button class="btn btn-primary btn-sm" type="submit">確認新增</button>
+              </div>
+              <div class="color-row" id="new-slot-colors"></div>
+            </form>
+
+            <!-- Active Boss Banner -->
+            <div id="boss-banner" class="boss-banner hidden"></div>
+
+            <!-- Progress -->
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);" class="tabular">
+              <span id="task-done-text">已完成 0/0 項活動</span>
+              <span id="task-pct-text">0%</span>
+            </div>
+            <div class="progress-track"><div id="task-progress-bar" class="progress-fill" style="width:0%;"></div></div>
+
+            <!-- Quick Presets -->
+            <div class="preset-row">
+              <span>常用組合：</span>
+              <button class="btn btn-sm" id="preset-study-home" type="button">自修 + 回家</button>
+              <button class="btn btn-sm" id="preset-evening" type="button">晚間衝刺</button>
+            </div>
+
+            <!-- Add Task Form -->
+            <form id="task-form" class="task-form">
+              <input id="task-input" type="text" maxlength="60" placeholder="寫下今日要完成的一件事..." />
+              <select id="task-slot-select" aria-label="選擇時段"></select>
+              <button class="btn btn-primary" type="submit">放上書桌</button>
+            </form>
+
+            <!-- Slots & Tasks -->
+            <div id="slot-list" class="slot-list"></div>
+
+            <!-- Today's Focus Footprints -->
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-muted);">
+                <strong>今日專注足跡紀錄</strong>
+                <span id="today-session-count" class="tabular">0 筆紀錄</span>
+              </div>
+              <div id="today-session-list" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Plant + Pet Mini + Timer + AI Monitor -->
+        <div class="stack">
+          <!-- Plant & Streak Card -->
+          <div class="card">
+            <div class="plant-layout">
+              <div class="plant-pot-box" id="plant-svg-box"></div>
+              <div class="plant-info">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                  <h2 id="plant-name" class="section-title" style="margin:0;">暖陽向日葵</h2>
+                  <span id="plant-stage-badge" class="badge">種子萌芽</span>
+                </div>
+                <p id="plant-subtitle" class="section-desc">累積 720 分鐘專注即可收成，同時為寵物賺取零食</p>
+
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:10px;" class="tabular">
+                  <span>成熟進度</span>
+                  <span id="plant-mins-text">0 / 720 分鐘 (0%)</span>
+                </div>
+                <div class="progress-track"><div id="plant-progress-bar" class="progress-fill" style="width:0%;"></div></div>
+
+                <div class="plant-stats tabular">
+                  <div class="mini-stat">
+                    <span>植物營養 ｜ 過勞警示</span>
+                    <strong id="plant-nutrition">88% ｜ 0/3日</strong>
+                  </div>
+                  <div class="mini-stat">
+                    <span>護盾儲備進度</span>
+                    <strong id="shield-progress-text">0/5 次無中斷</strong>
+                  </div>
+                </div>
+
+                <button id="btn-harvest" class="btn btn-green hidden" type="button" style="width:100%; margin-top:10px;">
+                  收成到暖陽花園並種下新種子
+                </button>
+              </div>
+            </div>
+
+            <!-- Desk Mini Pet Strip -->
+            <div id="desk-pet-strip" style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div id="desk-pet-mini-svg" style="width:46px; height:46px; cursor:pointer;" title="點我互動"></div>
+                <div>
+                  <div style="font-size:13px; font-weight:700;" id="desk-pet-title">橘寶 Lv.1</div>
+                  <div style="font-size:12px; color:var(--text-muted);" id="desk-pet-status">零食 2 份・點擊去花園互動</div>
+                </div>
+              </div>
+              <button id="btn-go-garden" class="btn btn-sm" type="button">去花園餵食</button>
+            </div>
+          </div>
+
+          <!-- Focus Timer Card -->
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">專注鬧鐘 <span class="badge">支援心流延續</span></h2>
+                <p class="section-desc">啟動後不設暫停，倒數結束可選擇小息或繼續推進</p>
+              </div>
+              <span id="timer-today-mins" style="font-size:12px; font-weight:700; color:var(--accent);" class="tabular">今日 0 分鐘</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <select id="focus-task-select" aria-label="選擇今日活動"></select>
+              <input id="focus-custom-task" type="text" maxlength="50" placeholder="或直接輸入專注事項，例如：操練數學 Past Paper..." />
+            </div>
+
+            <div class="focus-presets">
+              <button class="focus-btn deep" data-mins="90" type="button">
+                <div>
+                  <span class="focus-btn-title">90 分鐘・深度專注</span>
+                  <span class="focus-btn-sub">心流推進 ＋ 3 份零食</span>
+                </div>
+                <div class="focus-btn-num tabular">90</div>
+              </button>
+              <button class="focus-btn quick" data-mins="30" type="button">
+                <div>
+                  <span class="focus-btn-title">30 分鐘・輕量衝刺</span>
+                  <span class="focus-btn-sub">無痛啟動 ＋ 1 份零食</span>
+                </div>
+                <div class="focus-btn-num tabular">30</div>
+              </button>
+            </div>
+
+            <div class="custom-min-row">
+              <input id="custom-mins-input" type="number" min="5" max="180" value="45" style="width:88px; flex:0 0 auto;" />
+              <span style="font-size:12px; color:var(--text-muted);">分鐘</span>
+              <button id="btn-start-custom" class="btn" type="button" style="flex:1;">以自訂時長啟動專注</button>
+            </div>
+          </div>
+
+          <!-- AI Camera Monitor Card -->
+          <div class="card">
+            <div class="section-head" style="margin-bottom:6px;">
+              <div>
+                <h2 class="section-title">AI 鏡頭專注偵測 <span class="badge">按需載入</span></h2>
+                <p class="section-desc">純本地瀏覽器運算，不錄影不上傳；偵測滑手機或離座逾時會提醒</p>
+              </div>
+              <button id="btn-toggle-cam" class="btn btn-sm" type="button">開啟偵測</button>
+            </div>
+            <div id="cam-status" style="font-size:12px; color:var(--text-muted);">目前未啟動（不佔用任何效能）</div>
+            <div id="cam-wrap" class="cam-preview-wrap hidden">
+              <video id="cam-video" autoplay playsinline muted></video>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: GARDEN & INTERACTIVE PETS -->
+    <section id="tab-garden" class="hidden">
+      <!-- Interactive Pet Playground -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">
+              書桌陪讀夥伴
+              <span id="pet-level-badge" class="badge badge-gold tabular">Lv.1</span>
+            </h2>
+            <p class="section-desc">點擊寵物摸頭互動；完成專注可賺取零食餵食，升級解鎖限定配件</p>
+          </div>
+          <span id="pet-treats-badge" class="badge tabular" style="font-size:13px; padding:4px 10px;">🍪 零食 2 份</span>
+        </div>
+
+        <div class="pet-stage">
+          <div id="pet-bubble" class="pet-bubble">點我摸頭，或者專注完餵我食零食啦！</div>
+          <button id="pet-avatar-btn" class="pet-avatar-btn" type="button" aria-label="與寵物互動">
+            <div id="pet-main-svg"></div>
+          </button>
+          <div style="width:100%; max-width:340px; margin-top:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);" class="tabular">
+              <span id="pet-name-label">暖暖橘貓</span>
+              <span id="pet-xp-label">親密度 0 / 50</span>
+            </div>
+            <div class="progress-track" style="margin:6px 0 12px;">
+              <div id="pet-xp-bar" class="progress-fill" style="width:0%;"></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+            <button id="btn-pet-pat" class="btn btn-sm" type="button">✋ 摸摸頭</button>
+            <button id="btn-pet-feed" class="btn btn-primary btn-sm" type="button">🍪 餵食零食 (+25 親密)</button>
+          </div>
+        </div>
+
+        <div class="desk-grid" style="margin-top:14px; gap:12px;">
+          <div class="inline-panel" style="margin:0;">
+            <strong style="font-size:13px; display:block; margin-bottom:8px;">切換陪讀寵物</strong>
+            <div id="pet-type-row" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+          </div>
+          <div class="inline-panel" style="margin:0;">
+            <strong style="font-size:13px; display:block; margin-bottom:8px;">穿戴解鎖配件（升級自動解鎖）</strong>
+            <div id="pet-acc-row" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seed Picker -->
+      <div class="card" style="margin-bottom:18px;">
+        <h2 class="section-title">選擇書桌植物品種</h2>
+        <p class="section-desc">切換後立即套用於目前成長中的植物外觀</p>
+        <div id="seed-grid" class="seed-grid"></div>
+      </div>
+
+      <!-- Harvested Garden -->
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">暖陽陽光花架 <span id="garden-total-badge" class="badge">0 盆已收成</span></h2>
+            <p class="section-desc" id="garden-total-hours">歷史累計總專注：0.0 小時</p>
+          </div>
+        </div>
+        <div id="garden-grid" class="garden-grid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DAILY REVIEW -->
+    <section id="tab-review" class="hidden">
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">過去 7 日專注節奏與連擊</h2>
+            <p class="section-desc">綠色代表達到健康目標，紅色代表超過單日過勞上限</p>
+          </div>
+        </div>
+        <div id="review-summary-stats" class="plant-stats tabular" style="grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));"></div>
+        <div id="review-chart" class="chart-wrap"></div>
+      </div>
+
+      <!-- Interrupt Root-Cause Analysis -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">中斷原因診斷 <span class="badge">近 30 日</span></h2>
+            <p class="section-desc">找出最常打斷你專注的根源，針對性調整溫書環境</p>
+          </div>
+          <span id="interrupt-30d-total" class="badge tabular">共 0 次中斷</span>
+        </div>
+        <div id="interrupt-analysis-body"></div>
+      </div>
+
+      <div class="desk-grid">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">每日 2 分鐘快檢復盤</h2>
+              <p class="section-desc">輸入文字會自動保存，亦可手動寫入日記</p>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+            <button id="btn-rev-prev" class="btn btn-sm" type="button">← 前一日</button>
+            <strong id="rev-date-label" class="tabular" style="font-size:14px;"></strong>
+            <button id="btn-rev-next" class="btn btn-sm" type="button">後一日 →</button>
+          </div>
+
+          <div id="rev-day-stats" class="mini-stat tabular" style="margin-bottom:12px;"></div>
+
+          <form id="review-form" style="display:flex; flex-direction:column; gap:10px;">
+            <div>
+              <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">1. 今日做得最好的一件事</label>
+              <textarea id="rev-q1" rows="2" placeholder="記錄今日令自己感到滿意或投入的小突破..."></textarea>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">2. 令我分心 / 卡關的原因</label>
+              <textarea id="rev-q2" rows="2" placeholder="例如手機通知、疲累、或是卡在某道題目太久..."></textarea>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">3. 明日第一個想改善的小動作</label>
+              <textarea id="rev-q3" rows="2" placeholder="寫一個具體且容易做到的小行動..."></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">立即寫入復盤</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">過往復盤日記 <span id="rev-count-badge" class="badge">0 篇</span></h2>
+              <p class="section-desc">點擊可快速切換回該日查看</p>
+            </div>
+          </div>
+          <div id="review-history" style="display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Fullscreen Focus / Flow Overtime / Break Overlay -->
+  <div id="focus-overlay" class="overlay hidden">
+    <div id="focus-mode-badge" class="badge" style="font-size:13px; padding:4px 12px;">深度專注進行中</div>
+    <h2 id="focus-overlay-task" style="margin:10px 0 4px; font-size:21px;">專心學習</h2>
+    <p id="focus-overlay-sub" style="margin:0 0 10px; font-size:13px; color:var(--text-muted);">不設暫停鍵，專心走完這一段路</p>
+
+    <!-- Boss HP Bar during Focus -->
+    <div id="overlay-boss-box" class="overlay-boss-box hidden">
+      <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--boss);" class="tabular">
+        <span id="overlay-boss-name">⚔ BOSS 戰</span>
+        <span id="overlay-boss-hp-text">HP 90 / 90</span>
+      </div>
+      <div class="progress-track" style="margin:6px 0 0; height:10px; background:var(--surface);">
+        <div id="overlay-boss-bar" class="progress-fill boss-fill" style="width:100%;"></div>
+      </div>
+    </div>
+
+    <!-- Timer Ring -->
+    <div class="ring-wrap">
+      <svg width="224" height="224" viewBox="0 0 240 240">
+        <circle cx="120" cy="120" r="104" fill="none" stroke="var(--border)" stroke-width="10"></circle>
+        <circle id="focus-ring-fg" cx="120" cy="120" r="104" fill="none" stroke="var(--accent)" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="653.45" stroke-dashoffset="0"
+          transform="rotate(-90 120 120)" style="transition: stroke-dashoffset 0.5s linear, stroke 0.3s ease;"></circle>
+      </svg>
+      <div class="ring-center">
+        <div id="focus-timer-text" class="ring-time tabular">90:00</div>
+        <div id="focus-pct-text" style="font-size:12px; color:var(--text-muted);" class="tabular">0% 完成</div>
+      </div>
+    </div>
+
+    <!-- Companion Pet in Overlay -->
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <div id="overlay-pet-svg" class="breathe" style="width:58px; height:58px;"></div>
+      <div id="overlay-pet-msg" style="font-size:13px; color:var(--text-muted); font-weight:600;">乖乖陪你一齊溫書中...</div>
+    </div>
+
+    <div id="focus-cam-alert" class="hidden" style="background:var(--danger-soft); color:var(--danger); padding:8px 14px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:12px;"></div>
+
+    <!-- Action Controls -->
+    <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+      <button id="btn-overlay-rain" class="btn" type="button">雨聲環境音</button>
+      <button id="btn-abort-open" class="btn btn-danger" type="button">緊急中斷</button>
+      <!-- Flow Extension Choices (shown when countdown hits 00:00) -->
+      <button id="btn-enter-break-now" class="btn btn-primary hidden" type="button">結算並進入小息</button>
+      <button id="btn-start-flow" class="btn btn-green hidden" type="button">狀態正好，繼續推進 (+心流)</button>
+      <!-- Overtime Stop -->
+      <button id="btn-stop-flow" class="btn btn-green hidden" type="button">結束心流，結算並小息</button>
+      <!-- Break Stop -->
+      <button id="btn-finish-break" class="btn btn-green hidden" type="button">結束休息，回到書桌</button>
+    </div>
+
+    <!-- Inline Abort Confirmation with Root-Cause Tagging -->
+    <div id="abort-panel" class="inline-panel hidden" style="max-width:400px; width:100%; margin-top:16px; text-align:left;">
+      <strong style="color:var(--danger); font-size:14px;">確定要中斷這次專注嗎？</strong>
+      <p style="font-size:12px; color:var(--text-muted); margin:6px 0 8px;">
+        本次進度將歸零，並重置護盾連勝計數。請先選擇中斷原因：
+      </p>
+      <div id="abort-reason-grid" class="reason-pill-grid">
+        <button type="button" class="reason-pill" data-reason="睇手機">📱 睇手機</button>
+        <button type="button" class="reason-pill" data-reason="題目卡關">🧩 題目卡關</button>
+        <button type="button" class="reason-pill" data-reason="眼瞓疲累">😴 眼瞓疲累</button>
+        <button type="button" class="reason-pill" data-reason="環境干擾">🔊 環境干擾</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-muted); margin:8px 0 6px;">
+        再輸入「<strong>我確認中斷專注</strong>」確認：
+      </p>
+      <input id="abort-phrase-input" type="text" placeholder="請輸入：我確認中斷專注" />
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button id="btn-abort-cancel" class="btn btn-sm" type="button" style="flex:1;">繼續專注</button>
+        <button id="btn-abort-confirm" class="btn btn-danger btn-sm" type="button" style="flex:1;">確定中斷</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storage, Backup & Settings Modal -->
+  <div id="storage-modal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">存檔備份與書桌設定</h2>
+          <p class="section-desc">所有資料儲存在本機瀏覽器，建議定期匯出 JSON 備份</p>
+        </div>
+        <button id="btn-close-storage" class="icon-btn" type="button" style="font-size:18px;">✕</button>
+      </div>
+
+      <div id="storage-summary" class="mini-stat tabular" style="margin-bottom:14px;"></div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+        <button id="btn-export-json" class="btn btn-primary" type="button">一鍵匯出存檔 (.json)</button>
+        <label class="btn" style="cursor:pointer;">
+          選擇 JSON 檔案匯入
+          <input id="file-import-json" type="file" accept=".json,application/json" class="hidden" />
+        </label>
+      </div>
+
+      <div class="inline-panel">
+        <strong style="font-size:13px; display:block; margin-bottom:6px;">或直接貼上 JSON 備份文字匯入</strong>
+        <textarea id="paste-import-json" rows="3" placeholder="貼上 warmdesk-backup 的 JSON 內容..."></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button id="btn-preview-import" class="btn btn-sm" type="button">檢驗檔案並預覽</button>
+          <button id="btn-confirm-import" class="btn btn-green btn-sm hidden" type="button">確認覆蓋並匯入</button>
+        </div>
+        <div id="import-preview-msg" style="font-size:12px; color:var(--text-muted); margin-top:6px;"></div>
+      </div>
+
+      <div class="inline-panel">
+        <strong style="font-size:13px; display:block; margin-bottom:8px;">專注、連擊與植物規則設定</strong>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px;">
+          <label>每日健康連擊目標（小時）
+            <input id="set-target-h" type="number" min="1" max="12" style="margin-top:4px;" />
+          </label>
+          <label>單日過勞上限（小時）
+            <input id="set-overwork-h" type="number" min="2" max="16" style="margin-top:4px;" />
+          </label>
+          <label>專注後休息倒數（分鐘）
+            <input id="set-break-m" type="number" min="1" max="60" style="margin-top:4px;" />
+          </label>
+          <label>AI 提醒緩衝秒數
+            <input id="set-ai-grace" type="number" min="5" max="60" style="margin-top:4px;" />
+          </label>
+        </div>
+        <button id="btn-save-settings" class="btn btn-primary btn-sm" type="button" style="margin-top:10px;">保存設定</button>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px;">
+        <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px;">
+          提示：請在 <strong>Safari 普通瀏覽模式（非私密瀏覽）</strong> 使用並「加至主畫面」，資料才會長期保留。
+        </p>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <button id="btn-reset-step1" class="btn btn-danger btn-sm" type="button">重設全部資料</button>
+          <button id="btn-reset-step2" class="btn btn-danger btn-sm hidden" type="button">二次確認：清空所有紀錄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'warmdesk_state_v2';
+      const MAX_DAILY_TASKS = 5;
+      const PLANT_MATURE_MINS = 720;
+      const RING_CIRCUMFERENCE = 2 * Math.PI * 104;
+      const MAX_SHIELDS = 3;
+      const SESSIONS_PER_SHIELD = 5;
+
+      const COLORS = [
+        { id: 'yellow', name: '暖黃', hex: '#D99B16' },
+        { id: 'green', name: '青綠', hex: '#5B8C6B' },
+        { id: 'coral', name: '珊瑚橘', hex: '#C87D55' },
+        { id: 'blue', name: '天藍', hex: '#4E84B4' },
+        { id: 'purple', name: '薰衣草紫', hex: '#8B6BB1' }
+      ];
+
+      const SPECIES = [
+        { id: 'sunflower', name: '暖陽向日葵', desc: '向光而生，穩步累積專注力' },
+        { id: 'jasmine', name: '清香茉莉', desc: '溫潤持久，保持平靜專注' },
+        { id: 'fiddle', name: '琴葉榕', desc: '大葉舒展，適合深度長時段' },
+        { id: 'monstera', name: '靜謐龜背竹', desc: '沉著耐看，陪伴日常複習' }
+      ];
+
+      const PET_TYPES = [
+        { id: 'cat', name: '暖暖橘貓', phrases: ['喵～今日呢段時間交俾你啦！', '慢慢來，專注完記得餵我食零食！', '你寫字嘅聲音令我好安心～', '搞掂咗今日個 Boss 未呀？'] },
+        { id: 'shiba', name: '元氣柴柴', phrases: ['汪！已經準備好陪你開工！', '唔好分心，我望實你㗎！', '再撐多一陣就可以去小息啦！', '摸頭好舒服，一齊衝刺！'] },
+        { id: 'bird', name: '白玉文鳥', phrases: ['啾啾！狀態好好，繼續保持！', '飲啖暖茶先再繼續溫書啦～', '每專注 30 分鐘就有零食收！', '唔好放棄，你比琴日更進一步！'] }
+      ];
+
+      const PET_ACCESSORIES = [
+        { id: 'none', name: '原本造型', minLevel: 1 },
+        { id: 'glasses', name: '學霸眼鏡', minLevel: 2 },
+        { id: 'scarf', name: '暖紅頸巾', minLevel: 3 },
+        { id: 'hat', name: '博士小帽', minLevel: 4 }
+      ];
+
+      const INTERRUPT_REASONS = [
+        { id: '睇手機', label: '📱 睇手機', tip: '建議開工前將手機開勿擾並放去伸手掂唔到嘅位置。' },
+        { id: '題目卡關', label: '🧩 題目卡關', tip: '卡住超過 5 分鐘可先標記跳過，留返小息後先拆解，保住心流。' },
+        { id: '眼瞓疲累', label: '😴 眼瞓疲累', tip: '呢段時間體力偏低，改排 30 分鐘短衝刺或溫生字會更有效率。' },
+        { id: '環境干擾', label: '🔊 環境干擾', tip: '可以開啟右上角「雨聲環境音」或者戴耳機隔絕雜音。' }
+      ];
+
+      const DEFAULT_SLOTS_TEMPLATE = [
+        { id: 'slot_self_study', name: 'Self Study', color: 'yellow' },
+        { id: 'slot_home', name: 'Home', color: 'green' }
+      ];
+
+      function getLocalDateStr(d = new Date()) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      function addDays(dateStr, delta) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return getLocalDateStr(new Date(y, m - 1, d + delta));
+      }
+
+      function formatFullDate(dateStr) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        const wk = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        return `${y}年${m}月${d}日 · ${wk[dt.getDay()]}`;
+      }
+
+      function formatClock(d = new Date()) {
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      }
+
+      function escapeHtml(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function uid(prefix) {
+        return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+      }
+
+      function colorHex(id) {
+        return (COLORS.find(c => c.id === id) || COLORS[0]).hex;
+      }
+
+      function defaultState() {
+        const today = getLocalDateStr();
+        return {
+          theme: 'light',
+          quote: '「慢慢來，比較快。專注當下這一段時間就足夠了。」',
+          lastSavedAt: null,
+          settings: {
+            targetHours: 3,
+            overworkHours: 7,
+            overworkDaysLimit: 3,
+            breakMinutes: 10,
+            aiGraceSeconds: 15
+          },
+          dailySlots: {
+            [today]: DEFAULT_SLOTS_TEMPLATE.map(s => ({ ...s }))
+          },
+          dailyTasks: {},
+          sessions: [],
+          interruptsByDate: {},
+          currentPlant: {
+            speciesId: 'sunflower',
+            minutes: 0,
+            nutrition: 88,
+            overworkStreak: 0
+          },
+          garden: [],
+          reviews: {},
+          pet: {
+            type: 'cat',
+            treats: 2,
+            xp: 0,
+            level: 1,
+            accessory: 'none'
+          },
+          streak: {
+            shields: 0,
+            uninterruptedProgress: 0,
+            completedDates: [],
+            shieldedDates: [],
+            bestStreak: 0,
+            lastCheckedDate: today
+          }
+        };
+      }
+
+      let storageOk = true;
+      function probeStorage() {
+        try {
+          const k = '__wd_probe__';
+          localStorage.setItem(k, '1');
+          localStorage.removeItem(k);
+          storageOk = true;
+        } catch (e) {
+          storageOk = false;
+        }
+        return storageOk;
+      }
+
+      function normalizeState(raw) {
+        const base = defaultState();
+        if (!raw || typeof raw !== 'object') return base;
+        return {
+          ...base,
+          ...raw,
+          settings: { ...base.settings, ...(raw.settings || {}) },
+          currentPlant: { ...base.currentPlant, ...(raw.currentPlant || {}) },
+          dailySlots: (raw.dailySlots && typeof raw.dailySlots === 'object') ? raw.dailySlots : base.dailySlots,
+          dailyTasks: (raw.dailyTasks && typeof raw.dailyTasks === 'object') ? raw.dailyTasks : {},
+          sessions: Array.isArray(raw.sessions) ? raw.sessions : [],
+          interruptsByDate: (raw.interruptsByDate && typeof raw.interruptsByDate === 'object') ? raw.interruptsByDate : {},
+          garden: Array.isArray(raw.garden) ? raw.garden : [],
+          reviews: (raw.reviews && typeof raw.reviews === 'object') ? raw.reviews : {},
+          pet: { ...base.pet, ...(raw.pet || {}) },
+          streak: {
+            ...base.streak,
+            ...(raw.streak || {}),
+            completedDates: Array.isArray(raw.streak?.completedDates) ? raw.streak.completedDates : [],
+            shieldedDates: Array.isArray(raw.streak?.shieldedDates) ? raw.streak.shieldedDates : []
+          }
+        };
+      }
+
+      let state = defaultState();
+      function loadState() {
+        probeStorage();
+        if (!storageOk) return;
+        try {
+          const txt = localStorage.getItem(STORAGE_KEY);
+          if (txt) state = normalizeState(JSON.parse(txt));
+        } catch (e) {
+          state = defaultState();
+        }
+      }
+
+      function saveState() {
+        state.lastSavedAt = formatClock();
+        if (storageOk) {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          } catch (e) {
+            storageOk = false;
+          }
+        }
+        updateSaveIndicator();
+      }
+
+      function ensureTodaySlots() {
+        const today = getLocalDateStr();
+        const existing = state.dailySlots[today];
+        if (!Array.isArray(existing) || existing.length === 0) {
+          const dates = Object.keys(state.dailySlots)
+            .filter(k => Array.isArray(state.dailySlots[k]) && state.dailySlots[k].length > 0)
+            .sort();
+          const source = dates.length ? state.dailySlots[dates[dates.length - 1]] : DEFAULT_SLOTS_TEMPLATE;
+          state.dailySlots[today] = source.map(sl => ({
+            id: sl.id || uid('slot'),
+            name: sl.name || 'Self Study',
+            color: sl.color || 'yellow'
+          }));
+          saveState();
+        }
+        return state.dailySlots[today];
+      }
+
+      function getTodayTasks() {
+        const today = getLocalDateStr();
+        if (!Array.isArray(state.dailyTasks[today])) state.dailyTasks[today] = [];
+        return state.dailyTasks[today];
+      }
+
+      function getTodayBoss() {
+        return getTodayTasks().find(t => t.isBoss) || null;
+      }
+
+      function getFocusMinsByDate(dateStr) {
+        return state.sessions
+          .filter(x => x.date === dateStr && !x.interrupted)
+          .reduce((sum, x) => sum + (Number(x.minutes) || 0), 0);
+      }
+
+      function toast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.remove('hidden');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(() => el.classList.add('hidden'), 2800);
+      }
+
+      function updateSaveIndicator() {
+        const el = document.getElementById('btn-save-status');
+        if (!storageOk) {
+          el.classList.add('warn');
+          el.textContent = '● 本地暫存受限（請匯出備份）';
+        } else {
+          el.classList.remove('warn');
+          el.textContent = `● 已自動存檔 ${state.lastSavedAt || formatClock()}`;
+        }
+      }
+
+      /* ================= Streak & Shield Logic ================= */
+      function evaluateStreakOnBoot() {
+        const today = getLocalDateStr();
+        const st = state.streak;
+        const targetMins = (Number(state.settings.targetHours) || 3) * 60;
+        let shieldUsed = false;
+
+        // Check days between lastCheckedDate and yesterday
+        let cursor = st.lastCheckedDate || today;
+        let guard = 0;
+        while (cursor < today && guard < 60) {
+          const met = getFocusMinsByDate(cursor) >= targetMins;
+          if (met && !st.completedDates.includes(cursor)) {
+            st.completedDates.push(cursor);
+          } else if (!met && !st.completedDates.includes(cursor) && !st.shieldedDates.includes(cursor)) {
+            // Check if there was an active streak the day before cursor
+            const prevDay = addDays(cursor, -1);
+            const hadPrev = st.completedDates.includes(prevDay) || st.shieldedDates.includes(prevDay);
+            if (hadPrev && st.shields > 0) {
+              st.shields -= 1;
+              st.shieldedDates.push(cursor);
+              shieldUsed = true;
+            }
+          }
+          cursor = addDays(cursor, 1);
+          guard++;
+        }
+
+        // Also check today
+        if (getFocusMinsByDate(today) >= targetMins && !st.completedDates.includes(today)) {
+          st.completedDates.push(today);
+        }
+
+        st.lastCheckedDate = today;
+        const current = computeCurrentStreak();
+        if (current > st.bestStreak) st.bestStreak = current;
+        if (shieldUsed) {
+          saveState();
+          setTimeout(() => toast('🛡 護盾已自動生效，幫你保住了連擊紀錄！'), 600);
+        }
+      }
+
+      function computeCurrentStreak() {
+        const st = state.streak;
+        const validSet = new Set([...st.completedDates, ...st.shieldedDates]);
+        const today = getLocalDateStr();
+        let cursor = validSet.has(today) ? today : addDays(today, -1);
+        let count = 0;
+        while (validSet.has(cursor) && count < 3650) {
+          count++;
+          cursor = addDays(cursor, -1);
+        }
+        return count;
+      }
+
+      /* ================= Web Audio: Rain & Chimes ================= */
+      let audioCtx = null;
+      let rainNode = null;
+      let rainOn = false;
+
+      function ensureAudio() {
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) audioCtx = new AC();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      }
+
+      function toggleRain() {
+        const ctx = ensureAudio();
+        if (!ctx) { toast('此瀏覽器不支援音訊合成'); return; }
+        if (rainOn) {
+          if (rainNode) { try { rainNode.stop(); } catch (_) {} rainNode.disconnect(); rainNode = null; }
+          rainOn = false;
+        } else {
+          const bufferSize = ctx.sampleRate * 2;
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          let lastOut = 0;
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            data[i] = (lastOut + 0.02 * white) / 1.02;
+            lastOut = data[i];
+            data[i] *= 2.5;
+          }
+          const src = ctx.createBufferSource();
+          src.buffer = buffer;
+          src.loop = true;
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 650;
+          const gain = ctx.createGain();
+          gain.gain.value = 0.22;
+          src.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          src.start();
+          rainNode = src;
+          rainOn = true;
+        }
+        updateRainButtons();
+      }
+
+      function updateRainButtons() {
+        const label = rainOn ? '雨聲開啟中' : '雨聲環境音';
+        ['btn-rain', 'btn-overlay-rain'].forEach(id => {
+          const b = document.getElementById(id);
+          if (!b) return;
+          b.textContent = label;
+          b.classList.toggle('active', rainOn);
+        });
+      }
+
+      function playChime(notes = [523.25, 659.25, 783.99]) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          g.gain.setValueAtTime(0.001, now + idx * 0.12);
+          g.gain.exponentialRampToValueAtTime(0.13, now + idx * 0.12 + 0.03);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.45);
+          osc.connect(g);
+          g.connect(ctx.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.5);
+        });
+      }
+
+      /* ================= SVG Renderers: Plant & Interactive Pets ================= */
+      function getPlantStage(mins) {
+        const pct = Math.min(100, (mins / PLANT_MATURE_MINS) * 100);
+        if (pct >= 100) return { stage: 4, label: '盛開成熟' };
+        if (pct >= 65) return { stage: 3, label: '含苞待放' };
+        if (pct >= 30) return { stage: 2, label: '枝葉舒展' };
+        if (pct > 0) return { stage: 1, label: '初露新芽' };
+        return { stage: 0, label: '種子萌芽' };
+      }
+
+      function renderPlantSVG(speciesId, mins) {
+        const { stage } = getPlantStage(mins);
+        const leaf = '#5B8C6B', leafLight = '#7EA58B', stem = '#4B7458';
+        let topPart = '';
+        if (stage === 0) {
+          topPart = `<circle cx="60" cy="86" r="5" fill="#8B684C"></circle><path d="M60 86 Q63 78 68 79" stroke="${leafLight}" stroke-width="3" fill="none" stroke-linecap="round"></path>`;
+        } else if (stage === 1) {
+          topPart = `<g class="sway"><path d="M60 88 L60 66" stroke="${stem}" stroke-width="3.5" stroke-linecap="round"></path><ellipse cx="52" cy="68" rx="9" ry="5" transform="rotate(-25 52 68)" fill="${leaf}"></ellipse><ellipse cx="68" cy="66" rx="9" ry="5" transform="rotate(25 68 66)" fill="${leafLight}"></ellipse></g>`;
+        } else {
+          const h = stage === 2 ? 46 : (stage === 3 ? 36 : 30);
+          let crown = '';
+          if (speciesId === 'sunflower' && stage >= 3) {
+            crown = stage === 4
+              ? `<circle cx="60" cy="24" r="14" fill="#F2B93B"></circle><circle cx="60" cy="24" r="8" fill="#6E472B"></circle>`
+              : `<circle cx="60" cy="30" r="9" fill="#E6AE35"></circle><circle cx="60" cy="30" r="5" fill="#6E472B"></circle>`;
+          } else if (speciesId === 'jasmine' && stage >= 3) {
+            crown = `<circle cx="52" cy="34" r="5.5" fill="#FFFDF7" stroke="#DFD5C5" stroke-width="1.5"></circle><circle cx="68" cy="32" r="5.5" fill="#FFFDF7" stroke="#DFD5C5" stroke-width="1.5"></circle>${stage === 4 ? '<circle cx="60" cy="24" r="6.5" fill="#FFFDF7" stroke="#DFD5C5" stroke-width="1.5"></circle>' : ''}`;
+          } else {
+            crown = `<ellipse cx="48" cy="${h + 10}" rx="13" ry="8" transform="rotate(-30 48 ${h + 10})" fill="${leaf}"></ellipse><ellipse cx="72" cy="${h + 8}" rx="13" ry="8" transform="rotate(30 72 ${h + 8})" fill="${leafLight}"></ellipse>${stage >= 3 ? `<ellipse cx="60" cy="${h}" rx="14" ry="9" fill="${leaf}"></ellipse>` : ''}`;
+          }
+          topPart = `<g class="sway"><path d="M60 88 Q58 62 60 ${h + 6}" stroke="${stem}" stroke-width="4" fill="none" stroke-linecap="round"></path><ellipse cx="49" cy="68" rx="11" ry="6" transform="rotate(-28 49 68)" fill="${leaf}"></ellipse><ellipse cx="71" cy="64" rx="11" ry="6" transform="rotate(28 71 64)" fill="${leafLight}"></ellipse>${crown}</g>`;
+        }
+        return `<svg width="114" height="120" viewBox="0 0 120 126" aria-hidden="true">${topPart}<ellipse cx="60" cy="88" rx="24" ry="5" fill="#6B503B"></ellipse><path d="M36 88 L42 116 Q60 121 78 116 L84 88 Z" fill="#C87D55"></path><rect x="33" y="83" width="54" height="8" rx="4" fill="#B56B44"></rect></svg>`;
+      }
+
+      function renderPetSVG(type, accessory = 'none', mood = 'happy', size = 112) {
+        const eyes = mood === 'puzzled'
+          ? `<circle cx="48" cy="58" r="3.2" fill="#2D2420"></circle><circle cx="72" cy="58" r="3.2" fill="#2D2420"></circle><path d="M55 69 Q60 65 65 69" stroke="#2D2420" stroke-width="2.2" fill="none" stroke-linecap="round"></path><text x="86" y="34" font-size="18" font-weight="700" fill="#C45348">?</text>`
+          : (mood === 'study'
+            ? `<path d="M44 58 Q48 61 52 58" stroke="#2D2420" stroke-width="2.4" fill="none" stroke-linecap="round"></path><path d="M68 58 Q72 61 76 58" stroke="#2D2420" stroke-width="2.4" fill="none" stroke-linecap="round"></path><path d="M56 67 Q60 70 64 67" stroke="#2D2420" stroke-width="2" fill="none" stroke-linecap="round"></path>`
+            : `<circle cx="48" cy="58" r="3.5" fill="#2D2420"></circle><circle cx="72" cy="58" r="3.5" fill="#2D2420"></circle><circle cx="49" cy="56.8" r="1.2" fill="#FFF"></circle><circle cx="73" cy="56.8" r="1.2" fill="#FFF"></circle><path d="M55 66 Q60 71 65 66" stroke="#2D2420" stroke-width="2.2" fill="none" stroke-linecap="round"></path>`);
+
+        let bodySvg = '';
+        if (type === 'shiba') {
+          bodySvg = `
+            <ellipse cx="60" cy="90" rx="28" ry="20" fill="#D99B52"></ellipse>
+            <ellipse cx="60" cy="95" rx="17" ry="13" fill="#FFF5E6"></ellipse>
+            <polygon points="34,42 42,20 53,36" fill="#D99B52"></polygon>
+            <polygon points="86,42 78,20 67,36" fill="#D99B52"></polygon>
+            <polygon points="38,38 43,25 49,35" fill="#F7C9B6"></polygon>
+            <polygon points="82,38 77,25 71,35" fill="#F7C9B6"></polygon>
+            <circle cx="60" cy="58" r="28" fill="#D99B52"></circle>
+            <ellipse cx="60" cy="67" rx="21" ry="15" fill="#FFF5E6"></ellipse>
+            <ellipse cx="44" cy="64" rx="4.5" ry="2.5" fill="#F29E94" opacity="0.6"></ellipse>
+            <ellipse cx="76" cy="64" rx="4.5" ry="2.5" fill="#F29E94" opacity="0.6"></ellipse>
+            <ellipse cx="60" cy="62" rx="3.8" ry="2.6" fill="#2D2420"></ellipse>
+            ${eyes}`;
+        } else if (type === 'bird') {
+          bodySvg = `
+            <ellipse cx="60" cy="76" rx="30" ry="29" fill="#FFFDF9" stroke="#E5DDD0" stroke-width="2"></ellipse>
+            <path d="M36 52 Q60 28 84 52 Q72 44 60 44 Q48 44 36 52 Z" fill="#3D3632"></path>
+            <ellipse cx="42" cy="64" rx="5.5" ry="3.2" fill="#F5A7A0" opacity="0.7"></ellipse>
+            <ellipse cx="78" cy="64" rx="5.5" ry="3.2" fill="#F5A7A0" opacity="0.7"></ellipse>
+            <polygon points="55,63 65,63 60,71" fill="#E87D6A"></polygon>
+            <path d="M48 104 L45 111 M51 104 L53 111 M70 104 L68 111 M73 104 L76 111" stroke="#D9886A" stroke-width="2.4" stroke-linecap="round"></path>
+            ${eyes}`;
+        } else {
+          // Orange cat
+          bodySvg = `
+            <path d="M84 94 Q103 86 99 70" stroke="#E39A54" stroke-width="7" fill="none" stroke-linecap="round"></path>
+            <ellipse cx="60" cy="91" rx="27" ry="19" fill="#E8A25D"></ellipse>
+            <ellipse cx="60" cy="95" rx="15" ry="12" fill="#FFF4E3"></ellipse>
+            <polygon points="34,46 38,22 54,37" fill="#E8A25D"></polygon>
+            <polygon points="86,46 82,22 66,37" fill="#E8A25D"></polygon>
+            <polygon points="38,42 40,28 50,37" fill="#F6C3B4"></polygon>
+            <polygon points="82,42 80,28 70,37" fill="#F6C3B4"></polygon>
+            <circle cx="60" cy="59" r="28" fill="#E8A25D"></circle>
+            <path d="M55 34 L55 41 M60 32 L60 42 M65 34 L65 41" stroke="#C57A35" stroke-width="2.5" stroke-linecap="round"></path>
+            <ellipse cx="43" cy="64" rx="4.5" ry="2.5" fill="#F29E94" opacity="0.6"></ellipse>
+            <ellipse cx="77" cy="64" rx="4.5" ry="2.5" fill="#F29E94" opacity="0.6"></ellipse>
+            <polygon points="57,62 63,62 60,65" fill="#D97D75"></polygon>
+            ${eyes}`;
+        }
+
+        let accSvg = '';
+        if (accessory === 'glasses') {
+          accSvg = `<circle cx="48" cy="58" r="8" fill="none" stroke="#3D312B" stroke-width="2.3"></circle><circle cx="72" cy="58" r="8" fill="none" stroke="#3D312B" stroke-width="2.3"></circle><line x1="56" y1="58" x2="64" y2="58" stroke="#3D312B" stroke-width="2.3"></line>`;
+        } else if (accessory === 'scarf') {
+          accSvg = `<rect x="38" y="79" width="44" height="9" rx="4.5" fill="#C45348"></rect><path d="M68 85 L75 101 L65 101 Z" fill="#A84036"></path>`;
+        } else if (accessory === 'hat') {
+          accSvg = `<polygon points="60,12 84,22 60,32 36,22" fill="#3D312B"></polygon><rect x="48" y="25" width="24" height="8" rx="2" fill="#2A211D"></rect><line x1="82" y1="22" x2="85" y2="34" stroke="#EAB308" stroke-width="2"></line><circle cx="85" cy="35" r="2.2" fill="#EAB308"></circle>`;
+        }
+
+        return `<svg width="${size}" height="${size}" viewBox="0 0 120 120" aria-hidden="true">${bodySvg}${accSvg}</svg>`;
+      }
+
+      /* ================= Pet Logic ================= */
+      function addPetXP(amount) {
+        const pet = state.pet;
+        pet.xp += amount;
+        const nextLevel = Math.floor(pet.xp / 50) + 1;
+        if (nextLevel > pet.level) {
+          pet.level = nextLevel;
+          const unlocked = PET_ACCESSORIES.find(a => a.minLevel === nextLevel);
+          toast(unlocked ? `🎉 寵物升上 Lv.${nextLevel}！解鎖配件「${unlocked.name}」` : `🎉 寵物升上 Lv.${nextLevel}！`);
+          playChime([587.33, 783.99, 987.77]);
+        }
+      }
+
+      /* ================= Render Functions ================= */
+      let newSlotColor = 'yellow';
+      let editingSlotId = null;
+      let reviewDate = getLocalDateStr();
+      let pendingImportData = null;
+      let selectedAbortReason = '';
+      let lastPatTime = 0;
+
+      function applyTheme() {
+        document.documentElement.classList.toggle('dark', state.theme === 'dark');
+        document.getElementById('btn-theme').textContent = state.theme === 'dark' ? '深夜書桌' : '晨光書桌';
+      }
+
+      function renderHeader() {
+        const today = getLocalDateStr();
+        document.getElementById('header-date').textContent = formatFullDate(today);
+        const mins = getFocusMinsByDate(today);
+        const interrupts = state.interruptsByDate[today] || 0;
+        const streakCount = computeCurrentStreak();
+
+        document.getElementById('header-focus-mins').textContent = mins;
+        document.getElementById('header-interrupts').textContent = interrupts;
+        document.getElementById('header-streak-chip').textContent = `🔥 ${streakCount} 日連擊 ｜ 🛡 ${state.streak.shields}`;
+        document.getElementById('timer-today-mins').textContent = `今日 ${mins} 分鐘`;
+        document.getElementById('garden-badge').textContent = state.garden.length;
+        updateSaveIndicator();
+      }
+
+      function renderQuote() {
+        document.getElementById('quote-display').textContent = state.quote;
+      }
+
+      function renderNewSlotColors() {
+        document.getElementById('new-slot-colors').innerHTML = COLORS.map(c => `
+          <button type="button" class="color-dot ${c.id === newSlotColor ? 'selected' : ''}"
+            data-color="${c.id}" title="${c.name}" style="background:${c.hex};"></button>
+        `).join('');
+      }
+
+      function renderBossBanner() {
+        const banner = document.getElementById('boss-banner');
+        const boss = getTodayBoss();
+        if (!boss) {
+          banner.classList.add('hidden');
+          return;
+        }
+        banner.classList.remove('hidden');
+        const maxHp = Number(boss.bossMaxHp) || 90;
+        const curHp = boss.done ? 0 : Math.max(0, Number(boss.bossHp ?? maxHp));
+        const pct = Math.round((curHp / maxHp) * 100);
+
+        banner.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div>
+              <span class="badge badge-boss">⚔ 今日 BOSS 戰</span>
+              <strong style="font-size:14px; margin-left:6px;">${escapeHtml(boss.title)}</strong>
+            </div>
+            <span class="tabular" style="font-size:12px; font-weight:700; color:var(--boss);">
+              ${curHp <= 0 ? '🏆 已擊破！' : `剩餘血量 ${curHp} / ${maxHp} HP`}
+            </span>
+          </div>
+          <div class="progress-track" style="margin:8px 0; height:10px; background:var(--surface);">
+            <div class="progress-fill boss-fill" style="width:${pct}%;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px;">
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span style="color:var(--text-muted);">難度 HP：</span>
+              ${[60, 90, 120].map(hp => `
+                <button type="button" class="btn btn-sm ${maxHp === hp ? 'active' : ''}" data-set-boss-hp="${hp}">${hp}m</button>
+              `).join('')}
+            </div>
+            ${curHp > 0 ? `<button type="button" id="btn-fight-boss" class="btn btn-boss btn-sm">⚔ 立即挑戰 Boss (30m)</button>` : `<span style="color:var(--green); font-weight:700;">已領取 +2 寵物零食獎勵</span>`}
+          </div>
+        `;
+      }
+
+      function renderSlotsAndTasks() {
+        const slots = ensureTodaySlots();
+        const tasks = getTodayTasks();
+        const validIds = new Set(slots.map(s => s.id));
+        tasks.forEach(t => { if (!validIds.has(t.slotId)) t.slotId = slots[0].id; });
+
+        // Slot select
+        const slotSelect = document.getElementById('task-slot-select');
+        const prevSlotVal = slotSelect.value;
+        slotSelect.innerHTML = slots.map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}</option>`).join('');
+        slotSelect.value = validIds.has(prevSlotVal) ? prevSlotVal : slots[0].id;
+
+        // Focus task select (highlight Boss first)
+        const focusSelect = document.getElementById('focus-task-select');
+        const prevFocusVal = focusSelect.value;
+        const pendingTasks = tasks.filter(t => !t.done).sort((a, b) => (b.isBoss ? 1 : 0) - (a.isBoss ? 1 : 0));
+        focusSelect.innerHTML = `<option value="">— 選擇今日活動（或於下方自訂）—</option>` +
+          pendingTasks.map(t => `<option value="${escapeHtml(t.id)}">${t.isBoss ? '⚔ [BOSS] ' : ''}${escapeHtml(t.title)}</option>`).join('');
+        if ([...focusSelect.options].some(o => o.value === prevFocusVal)) focusSelect.value = prevFocusVal;
+
+        // Progress
+        const doneCount = tasks.filter(t => t.done).length;
+        const pct = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
+        document.getElementById('task-limit-badge').textContent = `${tasks.length}/${MAX_DAILY_TASKS} 項活動`;
+        document.getElementById('task-done-text').textContent = `已完成 ${doneCount}/${tasks.length} 項活動`;
+        document.getElementById('task-pct-text').textContent = `${pct}%`;
+        document.getElementById('task-progress-bar').style.width = `${pct}%`;
+
+        renderBossBanner();
+
+        // Render Slots
+        const listEl = document.getElementById('slot-list');
+        listEl.innerHTML = slots.map((slot, idx) => {
+          const slotTasks = tasks.filter(t => t.slotId === slot.id);
+          const bgHex = colorHex(slot.color);
+          const isEditing = editingSlotId === slot.id;
+
+          const tasksHtml = slotTasks.length ? slotTasks.map(t => `
+            <div class="task-item ${t.isBoss ? 'is-boss' : ''}">
+              <button type="button" class="task-check ${t.done ? 'done' : ''}" data-action="toggle-task" data-id="${escapeHtml(t.id)}" aria-label="切換完成">
+                ${t.done ? '✓' : ''}
+              </button>
+              <span class="task-text ${t.done ? 'done' : ''}">
+                ${t.isBoss ? '<span class="badge badge-boss" style="margin-right:4px;">BOSS</span>' : ''}${escapeHtml(t.title)}
+              </span>
+              ${!t.done ? `<button type="button" class="icon-btn ${t.isBoss ? 'boss-active' : ''}" data-action="toggle-boss" data-id="${escapeHtml(t.id)}" title="設為今日 Boss">⚔</button>` : ''}
+              <button type="button" class="icon-btn" data-action="delete-task" data-id="${escapeHtml(t.id)}" title="刪除">✕</button>
+            </div>
+          `).join('') : `<div class="slot-empty">尚無活動，可從上方選擇「${escapeHtml(slot.name)}」加入</div>`;
+
+          const editorHtml = isEditing ? `
+            <div class="inline-panel" style="margin:8px 0 0;">
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <input type="text" maxlength="20" value="${escapeHtml(slot.name)}" data-edit-name="${escapeHtml(slot.id)}" style="flex:1 1 120px; padding:6px 8px;" />
+                <button type="button" class="btn btn-primary btn-sm" data-action="save-slot" data-id="${escapeHtml(slot.id)}">儲存</button>
+                <button type="button" class="btn btn-sm" data-action="cancel-slot">取消</button>
+              </div>
+              <div class="color-row">
+                ${COLORS.map(c => `
+                  <button type="button" class="color-dot ${c.id === slot.color ? 'selected' : ''}"
+                    data-action="recolor-slot" data-id="${escapeHtml(slot.id)}" data-color="${c.id}"
+                    style="background:${c.hex};"></button>
+                `).join('')}
+              </div>
+              <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-sm" data-action="move-slot" data-id="${escapeHtml(slot.id)}" data-dir="-1" ${idx === 0 ? 'disabled' : ''}>↑ 上移</button>
+                <button type="button" class="btn btn-sm" data-action="move-slot" data-id="${escapeHtml(slot.id)}" data-dir="1" ${idx === slots.length - 1 ? 'disabled' : ''}>↓ 下移</button>
+                <button type="button" class="btn btn-danger btn-sm" data-action="delete-slot" data-id="${escapeHtml(slot.id)}" style="margin-left:auto;">刪除此時段</button>
+              </div>
+            </div>` : '';
+
+          return `
+            <div>
+              <div class="slot-card">
+                <div class="slot-body">${tasksHtml}</div>
+                <button type="button" class="slot-bar" data-action="edit-slot" data-id="${escapeHtml(slot.id)}" style="background:${bgHex};">
+                  <span class="slot-bar-name">${escapeHtml(slot.name)}</span>
+                  <span class="slot-bar-hint">點擊編輯</span>
+                </button>
+              </div>
+              ${editorHtml}
+            </div>`;
+        }).join('');
+
+        // Today sessions
+        const today = getLocalDateStr();
+        const todaySessions = state.sessions.filter(x => x.date === today);
+        document.getElementById('today-session-count').textContent = `${todaySessions.length} 筆紀錄`;
+        document.getElementById('today-session-list').innerHTML = todaySessions.length ? todaySessions.slice().reverse().map(x => `
+          <div style="display:flex; justify-content:space-between; gap:8px; font-size:12px; padding:6px 10px; background:var(--surface-soft); border-radius:8px;">
+            <span>${x.interrupted ? `⚠ [${escapeHtml(x.interruptReason || '中斷')}] ` : '● '}${escapeHtml(x.task)}</span>
+            <span class="tabular" style="color:var(--text-muted); flex-shrink:0;">
+              ${x.interrupted ? '中斷' : `${x.minutes}m${x.overtimeMinutes ? ` (+${x.overtimeMinutes}心流)` : ''}`} · ${escapeHtml(x.time || '')}
+            </span>
+          </div>
+        `).join('') : `<div style="font-size:12px; color:var(--text-muted);">今日尚未完成專注紀錄</div>`;
+      }
+
+      function renderPlantAndMiniPet() {
+        const p = state.currentPlant;
+        const sp = SPECIES.find(x => x.id === p.speciesId) || SPECIES[0];
+        const stageInfo = getPlantStage(p.minutes);
+        const pct = Math.min(100, Math.round((p.minutes / PLANT_MATURE_MINS) * 100));
+
+        document.getElementById('plant-svg-box').innerHTML = renderPlantSVG(sp.id, p.minutes);
+        document.getElementById('plant-name').textContent = sp.name;
+        document.getElementById('plant-stage-badge').textContent = stageInfo.label;
+        document.getElementById('plant-mins-text').textContent = `${p.minutes} / ${PLANT_MATURE_MINS} 分鐘 (${pct}%)`;
+        document.getElementById('plant-progress-bar').style.width = `${pct}%`;
+        document.getElementById('plant-nutrition').textContent = `${p.nutrition}% ｜ ${p.overworkStreak}/${state.settings.overworkDaysLimit}日`;
+        document.getElementById('shield-progress-text').textContent =
+          state.streak.shields >= MAX_SHIELDS
+            ? `護盾已滿 (${MAX_SHIELDS}/${MAX_SHIELDS})`
+            : `${state.streak.uninterruptedProgress}/${SESSIONS_PER_SHIELD} 次解鎖下個護盾`;
+        document.getElementById('btn-harvest').classList.toggle('hidden', p.minutes < PLANT_MATURE_MINS);
+
+        // Mini Pet on Desk
+        const pet = state.pet;
+        const petMeta = PET_TYPES.find(t => t.id === pet.type) || PET_TYPES[0];
+        document.getElementById('desk-pet-mini-svg').innerHTML = renderPetSVG(pet.type, pet.accessory, 'happy', 46);
+        document.getElementById('desk-pet-title').textContent = `${petMeta.name} Lv.${pet.level}`;
+        document.getElementById('desk-pet-status').textContent = `🍪 零食 ${pet.treats} 份・親密度 ${pet.xp % 50}/50`;
+      }
+
+      function renderGardenAndPet() {
+        const pet = state.pet;
+        const petMeta = PET_TYPES.find(t => t.id === pet.type) || PET_TYPES[0];
+        const xpInLevel = pet.xp % 50;
+
+        document.getElementById('pet-level-badge').textContent = `Lv.${pet.level}`;
+        document.getElementById('pet-treats-badge').textContent = `🍪 零食 ${pet.treats} 份`;
+        document.getElementById('pet-name-label').textContent = petMeta.name;
+        document.getElementById('pet-xp-label').textContent = `親密度 ${xpInLevel} / 50`;
+        document.getElementById('pet-xp-bar').style.width = `${Math.round((xpInLevel / 50) * 100)}%`;
+        document.getElementById('pet-main-svg').innerHTML = renderPetSVG(pet.type, pet.accessory, 'happy', 118);
+
+        document.getElementById('pet-type-row').innerHTML = PET_TYPES.map(t => `
+          <button type="button" class="btn btn-sm ${pet.type === t.id ? 'active' : ''}" data-pet-type="${t.id}">${t.name}</button>
+        `).join('');
+
+        document.getElementById('pet-acc-row').innerHTML = PET_ACCESSORIES.map(a => {
+          const locked = pet.level < a.minLevel;
+          return `
+            <button type="button" class="btn btn-sm ${pet.accessory === a.id ? 'active' : ''}" data-pet-acc="${a.id}" ${locked ? 'disabled' : ''}>
+              ${locked ? `🔒 Lv.${a.minLevel} ` : ''}${a.name}
+            </button>`;
+        }).join('');
+
+        // Seed picker
+        document.getElementById('seed-grid').innerHTML = SPECIES.map(sp => `
+          <div class="seed-card ${state.currentPlant.speciesId === sp.id ? 'active' : ''}" data-select-species="${sp.id}">
+            <div style="height:96px; display:flex; align-items:center; justify-content:center;">
+              ${renderPlantSVG(sp.id, PLANT_MATURE_MINS)}
+            </div>
+            <strong style="font-size:14px; display:block; margin-top:4px;">${sp.name}</strong>
+            <span style="font-size:11px; color:var(--text-muted);">${sp.desc}</span>
+          </div>
+        `).join('');
+
+        const totalMins = state.sessions.filter(s => !s.interrupted).reduce((sum, s) => sum + (Number(s.minutes) || 0), 0);
+        document.getElementById('garden-total-badge').textContent = `${state.garden.length} 盆已收成`;
+        document.getElementById('garden-total-hours').textContent = `歷史累計總專注：${(totalMins / 60).toFixed(1)} 小時`;
+
+        document.getElementById('garden-grid').innerHTML = state.garden.length ? state.garden.slice().reverse().map(item => `
+          <div class="card" style="padding:14px; text-align:center;">
+            ${renderPlantSVG(item.speciesId, PLANT_MATURE_MINS)}
+            <strong style="display:block; font-size:14px; margin-top:4px;">${escapeHtml(item.name)}</strong>
+            <div style="font-size:11px; color:var(--text-muted);" class="tabular">
+              收成於 ${escapeHtml(item.harvestedAt)} · ${item.minutes} 分鐘
+            </div>
+          </div>
+        `).join('') : `<div style="font-size:13px; color:var(--text-muted); padding:16px 0;">尚未收成植物，累積 720 分鐘專注即可收成第一盆！</div>`;
+      }
+
+      function renderReview() {
+        const today = getLocalDateStr();
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = addDays(today, -i);
+          days.push({ date: d, mins: getFocusMinsByDate(d) });
+        }
+        const total7 = days.reduce((s, d) => s + d.mins, 0);
+        const targetMins = state.settings.targetHours * 60;
+        const overMins = state.settings.overworkHours * 60;
+        const currentStreak = computeCurrentStreak();
+
+        document.getElementById('review-summary-stats').innerHTML = `
+          <div class="mini-stat"><span>7 日總專注</span><strong>${total7} 分鐘</strong></div>
+          <div class="mini-stat"><span>當前連擊 / 最佳</span><strong>🔥 ${currentStreak} / ${Math.max(currentStreak, state.streak.bestStreak)} 日</strong></div>
+          <div class="mini-stat"><span>現有護盾</span><strong>🛡 ${state.streak.shields} / ${MAX_SHIELDS} 個</strong></div>
+          <div class="mini-stat"><span>每日連擊目標</span><strong>${state.settings.targetHours} 小時</strong></div>
+        `;
+
+        const maxVal = Math.max(overMins, ...days.map(d => d.mins), 60);
+        document.getElementById('review-chart').innerHTML = days.map(d => {
+          const h = Math.round((d.mins / maxVal) * 100);
+          const cls = d.mins > overMins ? 'overwork' : (d.mins >= targetMins ? 'healthy' : '');
+          return `
+            <div class="chart-col">
+              <div class="chart-val tabular">${d.mins > 0 ? d.mins : ''}</div>
+              <div class="chart-bar ${cls}" style="height:${Math.max(h, d.mins > 0 ? 6 : 2)}%;"></div>
+              <div class="chart-lbl tabular">${d.date.slice(5)}</div>
+            </div>`;
+        }).join('');
+
+        // 30-day Interrupt Root-Cause Diagnosis
+        const cutoff = addDays(today, -30);
+        const interrupted30 = state.sessions.filter(s => s.interrupted && s.date >= cutoff);
+        document.getElementById('interrupt-30d-total').textContent = `共 ${interrupted30.length} 次中斷`;
+        const diagEl = document.getElementById('interrupt-analysis-body');
+
+        if (!interrupted30.length) {
+          diagEl.innerHTML = `<div style="font-size:13px; color:var(--green); font-weight:600;">近 30 日零中斷紀錄，專注控制力極佳！</div>`;
+        } else {
+          const counts = {};
+          INTERRUPT_REASONS.forEach(r => counts[r.id] = 0);
+          interrupted30.forEach(s => {
+            const key = counts[s.interruptReason] !== undefined ? s.interruptReason : '睇手機';
+            counts[key] += 1;
+          });
+          const sorted = INTERRUPT_REASONS.map(r => ({ ...r, count: counts[r.id] })).sort((a, b) => b.count - a.count);
+          const top = sorted[0];
+
+          diagEl.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${sorted.map(r => {
+                const pct = Math.round((r.count / interrupted30.length) * 100);
+                return `
+                  <div>
+                    <div style="display:flex; justify-content:space-between; font-size:12px;" class="tabular">
+                      <span>${r.label}</span>
+                      <strong>${r.count} 次 (${pct}%)</strong>
+                    </div>
+                    <div class="progress-track" style="margin:4px 0 0; height:7px;">
+                      <div class="progress-fill" style="width:${pct}%; background:${r.id === top.id ? 'var(--danger)' : 'var(--accent)'};"></div>
+                    </div>
+                  </div>`;
+              }).join('')}
+            </div>
+            <div class="inline-panel" style="margin:12px 0 0; font-size:12px;">
+              <strong>首要改善建議（針對「${top.id}」）：</strong>${top.tip}
+            </div>`;
+        }
+
+        // Selected day review
+        document.getElementById('rev-date-label').textContent = formatFullDate(reviewDate);
+        const dayMins = getFocusMinsByDate(reviewDate);
+        const dayTasks = state.dailyTasks[reviewDate] || [];
+        const dayDone = dayTasks.filter(t => t.done).length;
+        const dayInt = state.interruptsByDate[reviewDate] || 0;
+        document.getElementById('rev-day-stats').innerHTML =
+          `專注 <strong>${dayMins} 分鐘</strong> ｜ 活動完成 <strong>${dayDone}/${dayTasks.length}</strong> ｜ 中斷 <strong>${dayInt} 次</strong>`;
+
+        const rev = state.reviews[reviewDate] || { q1: '', q2: '', q3: '' };
+        document.getElementById('rev-q1').value = rev.q1 || '';
+        document.getElementById('rev-q2').value = rev.q2 || '';
+        document.getElementById('rev-q3').value = rev.q3 || '';
+
+        const revKeys = Object.keys(state.reviews)
+          .filter(k => { const r = state.reviews[k]; return r && (r.q1 || r.q2 || r.q3); })
+          .sort().reverse();
+        document.getElementById('rev-count-badge').textContent = `${revKeys.length} 篇`;
+        document.getElementById('review-history').innerHTML = revKeys.length ? revKeys.map(k => {
+          const r = state.reviews[k];
+          return `
+            <div class="inline-panel" style="margin:0; cursor:pointer;" data-jump-review="${k}">
+              <strong style="font-size:13px;" class="tabular">${k}</strong>
+              ${r.q1 ? `<div style="font-size:12px; margin-top:4px;">✓ ${escapeHtml(r.q1)}</div>` : ''}
+              ${r.q2 ? `<div style="font-size:12px; color:var(--text-muted); margin-top:2px;">• ${escapeHtml(r.q2)}</div>` : ''}
+              ${r.q3 ? `<div style="font-size:12px; color:var(--accent); margin-top:2px;">→ ${escapeHtml(r.q3)}</div>` : ''}
+            </div>`;
+        }).join('') : `<div style="font-size:13px; color:var(--text-muted);">尚未寫下任何復盤日記</div>`;
+      }
+
+      /* ================= Focus, Flow Extension & Break Engine ================= */
+      let timerMode = null; // 'focus' | 'focus_ready' | 'overtime' | 'break' | null
+      let timerTaskTitle = '';
+      let timerTaskId = null;
+      let timerBaseMins = 0;
+      let timerTotalSecs = 0;
+      let timerEndAt = 0;
+      let overtimeStartAt = 0;
+      let timerInterval = null;
+
+      function updateOverlayPet(mood, msg) {
+        document.getElementById('overlay-pet-svg').innerHTML = renderPetSVG(state.pet.type, state.pet.accessory, mood, 58);
+        document.getElementById('overlay-pet-msg').textContent = msg;
+      }
+
+      function updateOverlayBossUI(elapsedFocusMins) {
+        const box = document.getElementById('overlay-boss-box');
+        const boss = timerTaskId ? getTodayTasks().find(t => t.id === timerTaskId && t.isBoss) : null;
+        if (!boss) {
+          box.classList.add('hidden');
+          return;
+        }
+        box.classList.remove('hidden');
+        const maxHp = Number(boss.bossMaxHp) || 90;
+        const baseHp = Number(boss.bossHp ?? maxHp);
+        const liveHp = Math.max(0, baseHp - elapsedFocusMins);
+        const pct = Math.round((liveHp / maxHp) * 100);
+        document.getElementById('overlay-boss-name').textContent = `⚔ BOSS：${boss.title}`;
+        document.getElementById('overlay-boss-hp-text').textContent = `HP ${liveHp} / ${maxHp}`;
+        document.getElementById('overlay-boss-bar').style.width = `${pct}%`;
+      }
+
+      function setOverlayButtons(mode) {
+        document.getElementById('btn-abort-open').classList.toggle('hidden', mode !== 'focus');
+        document.getElementById('btn-enter-break-now').classList.toggle('hidden', mode !== 'focus_ready');
+        document.getElementById('btn-start-flow').classList.toggle('hidden', mode !== 'focus_ready');
+        document.getElementById('btn-stop-flow').classList.toggle('hidden', mode !== 'overtime');
+        document.getElementById('btn-finish-break').classList.toggle('hidden', mode !== 'break');
+      }
+
+      function startFocus(mins, forcedTaskId = null) {
+        const customText = document.getElementById('focus-custom-task').value.trim();
+        const selectId = forcedTaskId || document.getElementById('focus-task-select').value;
+        const matchedTask = selectId ? getTodayTasks().find(t => t.id === selectId) : null;
+
+        timerTaskId = matchedTask ? matchedTask.id : null;
+        timerTaskTitle = customText || (matchedTask ? matchedTask.title : '專心學習');
+        timerBaseMins = mins;
+        timerMode = 'focus';
+        timerTotalSecs = mins * 60;
+        timerEndAt = Date.now() + timerTotalSecs * 1000;
+
+        document.getElementById('focus-mode-badge').textContent = matchedTask?.isBoss ? '⚔ BOSS 戰進行中' : '深度專注進行中';
+        document.getElementById('focus-mode-badge').className = matchedTask?.isBoss ? 'badge badge-boss' : 'badge';
+        document.getElementById('focus-overlay-task').textContent = timerTaskTitle;
+        document.getElementById('focus-overlay-sub').textContent = '不設暫停鍵，專心走完這一段路';
+        document.getElementById('focus-ring-fg').style.stroke = matchedTask?.isBoss ? 'var(--boss)' : 'var(--accent)';
+        document.getElementById('abort-panel').classList.add('hidden');
+        document.getElementById('abort-phrase-input').value = '';
+        selectedAbortReason = '';
+        document.querySelectorAll('#abort-reason-grid .reason-pill').forEach(p => p.classList.remove('selected'));
+
+        setOverlayButtons('focus');
+        updateOverlayPet('study', matchedTask?.isBoss ? '一齊擊破今日個 Boss！' : '乖乖陪你一齊溫書中...');
+        updateOverlayBossUI(0);
+        document.getElementById('focus-overlay').classList.remove('hidden');
+
+        tickTimer();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(tickTimer, 500);
+      }
+
+      function enterFlowExtension() {
+        timerMode = 'overtime';
+        overtimeStartAt = Date.now();
+        document.getElementById('focus-mode-badge').textContent = '✨ 心流延續模式';
+        document.getElementById('focus-mode-badge').className = 'badge badge-green';
+        document.getElementById('focus-overlay-sub').textContent = '額外分鐘會全數計入成長，延續滿 10 分鐘額外送零食';
+        document.getElementById('focus-ring-fg').style.stroke = 'var(--green)';
+        document.getElementById('focus-ring-fg').style.strokeDashoffset = '0';
+        setOverlayButtons('overtime');
+        updateOverlayPet('study', '狀態大勇！繼續推進心流！');
+        tickTimer();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(tickTimer, 500);
+      }
+
+      function startBreak() {
+        const mins = Math.max(1, Number(state.settings.breakMinutes) || 10);
+        timerMode = 'break';
+        timerTotalSecs = mins * 60;
+        timerEndAt = Date.now() + timerTotalSecs * 1000;
+
+        document.getElementById('focus-mode-badge').textContent = '專注完成・休息充電中';
+        document.getElementById('focus-mode-badge').className = 'badge badge-green';
+        document.getElementById('focus-overlay-task').textContent = `小息 ${mins} 分鐘`;
+        document.getElementById('focus-overlay-sub').textContent = '起身伸展、飲啖水，讓大腦恢復最佳狀態';
+        document.getElementById('focus-ring-fg').style.stroke = 'var(--green)';
+        document.getElementById('overlay-boss-box').classList.add('hidden');
+        setOverlayButtons('break');
+        updateOverlayPet('happy', '做得好！一齊抖下氣飲啖水先～');
+
+        tickTimer();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(tickTimer, 500);
+      }
+
+      function tickTimer() {
+        if (!timerMode) return;
+
+        if (timerMode === 'overtime') {
+          const extraSecs = Math.max(0, Math.floor((Date.now() - overtimeStartAt) / 1000));
+          const mm = String(Math.floor(extraSecs / 60)).padStart(2, '0');
+          const ss = String(extraSecs % 60).padStart(2, '0');
+          document.getElementById('focus-timer-text').textContent = `+${mm}:${ss}`;
+          document.getElementById('focus-pct-text').textContent = `已累計 ${timerBaseMins + Math.floor(extraSecs / 60)} 分鐘`;
+          updateOverlayBossUI(timerBaseMins + Math.floor(extraSecs / 60));
+          return;
+        }
+
+        const leftSecs = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
+        const mm = String(Math.floor(leftSecs / 60)).padStart(2, '0');
+        const ss = String(leftSecs % 60).padStart(2, '0');
+        const ratio = timerTotalSecs > 0 ? (1 - leftSecs / timerTotalSecs) : 1;
+
+        document.getElementById('focus-timer-text').textContent = `${mm}:${ss}`;
+        document.getElementById('focus-pct-text').textContent = `${Math.round(ratio * 100)}% 完成`;
+        document.getElementById('focus-ring-fg').style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - ratio));
+
+        if (timerMode === 'focus') {
+          const elapsedMins = Math.floor((timerTotalSecs - leftSecs) / 60);
+          updateOverlayBossUI(elapsedMins);
+        }
+
+        if (leftSecs <= 0) {
+          clearInterval(timerInterval);
+          playChime();
+          if (timerMode === 'focus') {
+            // Pause at 00:00 and offer Flow Extension OR Break!
+            timerMode = 'focus_ready';
+            document.getElementById('focus-mode-badge').textContent = '🎉 本段目標達成！';
+            document.getElementById('focus-mode-badge').className = 'badge badge-gold';
+            document.getElementById('focus-overlay-sub').textContent = '要趁勢延續心流，還是先進入小息充電？';
+            document.getElementById('abort-panel').classList.add('hidden');
+            setOverlayButtons('focus_ready');
+            updateOverlayPet('happy', '好勁呀！你想繼續推進定抖下先？');
+            updateOverlayBossUI(timerBaseMins);
+          } else if (timerMode === 'break') {
+            endOverlay();
+            toast('休息完成，歡迎回到書桌！');
+          }
+        }
+      }
+
+      function settleFocusAndBreak(extraMins = 0) {
+        const totalMins = timerBaseMins + extraMins;
+        const today = getLocalDateStr();
+
+        state.sessions.push({
+          id: uid('ses'),
+          date: today,
+          task: timerTaskTitle,
+          taskId: timerTaskId,
+          minutes: totalMins,
+          overtimeMinutes: extraMins,
+          time: formatClock(),
+          interrupted: false
+        });
+
+        // Plant growth
+        state.currentPlant.minutes += totalMins;
+        const todayTotal = getFocusMinsByDate(today);
+        if (todayTotal > state.settings.overworkHours * 60) {
+          state.currentPlant.nutrition = Math.max(20, state.currentPlant.nutrition - 8);
+          state.currentPlant.overworkStreak = Math.min(state.settings.overworkDaysLimit, state.currentPlant.overworkStreak + 1);
+        } else {
+          state.currentPlant.nutrition = Math.min(100, state.currentPlant.nutrition + 4);
+        }
+
+        // Pet treats
+        let earnedTreats = Math.floor(totalMins / 30);
+        if (earnedTreats === 0 && totalMins >= 15) earnedTreats = 1;
+        if (extraMins >= 10) earnedTreats += 1;
+
+        // Boss HP damage
+        let bossDefeatedNow = false;
+        const boss = timerTaskId ? getTodayTasks().find(t => t.id === timerTaskId && t.isBoss) : null;
+        if (boss && !boss.done) {
+          const maxHp = Number(boss.bossMaxHp) || 90;
+          boss.bossHp = Math.max(0, Number(boss.bossHp ?? maxHp) - totalMins);
+          if (boss.bossHp <= 0) {
+            boss.done = true;
+            boss.bossDefeated = true;
+            earnedTreats += 2;
+            bossDefeatedNow = true;
+          }
+        }
+        state.pet.treats += earnedTreats;
+
+        // Streak & Shield update
+        const targetMins = (Number(state.settings.targetHours) || 3) * 60;
+        if (todayTotal >= targetMins && !state.streak.completedDates.includes(today)) {
+          state.streak.completedDates.push(today);
+          const curStreak = computeCurrentStreak();
+          if (curStreak > state.streak.bestStreak) state.streak.bestStreak = curStreak;
+        }
+        if (state.streak.shields < MAX_SHIELDS) {
+          state.streak.uninterruptedProgress += 1;
+          if (state.streak.uninterruptedProgress >= SESSIONS_PER_SHIELD) {
+            state.streak.uninterruptedProgress = 0;
+            state.streak.shields += 1;
+            toast('🛡 連續 5 次無中斷專注，獲得 1 個連擊護盾！');
+          }
+        }
+
+        saveState();
+        renderHeader();
+        renderSlotsAndTasks();
+        renderPlantAndMiniPet();
+
+        if (bossDefeatedNow) {
+          playChime([523.25, 659.25, 783.99, 1046.5]);
+          toast(`🏆 成功擊破今日 Boss！獲得 ${earnedTreats} 份寵物零食`);
+        } else {
+          toast(`完成 ${totalMins} 分鐘專注！植物成長並獲得 ${earnedTreats} 份零食`);
+        }
+        startBreak();
+      }
+
+      function abortFocusSession() {
+        const today = getLocalDateStr();
+        state.interruptsByDate[today] = (state.interruptsByDate[today] || 0) + 1;
+        state.streak.uninterruptedProgress = 0;
+        state.sessions.push({
+          id: uid('ses'),
+          date: today,
+          task: timerTaskTitle,
+          taskId: timerTaskId,
+          minutes: 0,
+          time: formatClock(),
+          interrupted: true,
+          interruptReason: selectedAbortReason
+        });
+        saveState();
+        endOverlay();
+        renderHeader();
+        renderSlotsAndTasks();
+        renderPlantAndMiniPet();
+        toast(`已記錄中斷（原因：${selectedAbortReason}），整理思緒再出發`);
+      }
+
+      function endOverlay() {
+        clearInterval(timerInterval);
+        timerMode = null;
+        document.getElementById('focus-overlay').classList.add('hidden');
+      }
+
+      /* ================= Lazy-Loaded AI Camera Monitor ================= */
+      let camStream = null, camModel = null, camLoopId = null, camActive = false, violationSince = null;
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src; s.onload = resolve; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      async function toggleCamera() {
+        const btn = document.getElementById('btn-toggle-cam');
+        const status = document.getElementById('cam-status');
+        const wrap = document.getElementById('cam-wrap');
+        const video = document.getElementById('cam-video');
+
+        if (camActive) {
+          camActive = false;
+          if (camLoopId) clearTimeout(camLoopId);
+          if (camStream) camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+          wrap.classList.add('hidden');
+          btn.textContent = '開啟偵測';
+          status.textContent = '已關閉偵測';
+          document.getElementById('focus-cam-alert').classList.add('hidden');
+          return;
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          toast('此瀏覽器或非 HTTPS 環境不支援鏡頭');
+          return;
+        }
+        btn.disabled = true;
+        status.textContent = '正在請求鏡頭權限...';
+        try {
+          camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 320, height: 180 }, audio: false });
+          video.srcObject = camStream;
+          await video.play();
+          wrap.classList.remove('hidden');
+          status.textContent = '正在載入本地 AI 模型（首次需數秒）...';
+          if (!window.tf) await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
+          if (!window.cocoSsd) await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js');
+          if (!camModel) camModel = await window.cocoSsd.load();
+          camActive = true;
+          btn.textContent = '關閉偵測';
+          status.textContent = 'AI 偵測運作中（低耗電模式）';
+          runCamLoop();
+        } catch (err) {
+          if (camStream) camStream.getTracks().forEach(t => t.stop());
+          camStream = null;
+          wrap.classList.add('hidden');
+          status.textContent = '無法啟動鏡頭或載入模型（請確認權限與網路）';
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async function runCamLoop() {
+        if (!camActive || !camModel) return;
+        const video = document.getElementById('cam-video');
+        const status = document.getElementById('cam-status');
+        const alertEl = document.getElementById('focus-cam-alert');
+        try {
+          const preds = await camModel.detect(video);
+          const hasPerson = preds.some(p => p.class === 'person' && p.score > 0.45);
+          const hasPhone = preds.some(p => p.class === 'cell phone' && p.score > 0.45);
+          const issue = hasPhone ? '偵測到使用手機' : (!hasPerson ? '偵測到離開座位' : null);
+          if (issue) {
+            if (!violationSince) violationSince = Date.now();
+            const elapsed = Math.floor((Date.now() - violationSince) / 1000);
+            const grace = Number(state.settings.aiGraceSeconds) || 15;
+            status.textContent = `⚠ ${issue}（已持續 ${elapsed} / ${grace} 秒）`;
+            if (elapsed >= grace) {
+              alertEl.textContent = `提醒：${issue}已超過 ${grace} 秒，請回到專注狀態`;
+              alertEl.classList.remove('hidden');
+              playChime();
+              violationSince = Date.now();
+            }
+          } else {
+            violationSince = null;
+            status.textContent = '● 狀態良好：專注於座位上';
+            alertEl.classList.add('hidden');
+          }
+        } catch (_) {}
+        if (camActive) camLoopId = setTimeout(runCamLoop, 1500);
+      }
+
+      /* ================= Pet Interaction Helpers ================= */
+      function patPet() {
+        const avatarBtn = document.getElementById('pet-avatar-btn');
+        const petMeta = PET_TYPES.find(t => t.id === state.pet.type) || PET_TYPES[0];
+        const msg = petMeta.phrases[Math.floor(Math.random() * petMeta.phrases.length)];
+        document.getElementById('pet-bubble').textContent = msg;
+
+        avatarBtn.classList.remove('pet-hop');
+        void avatarBtn.offsetWidth;
+        avatarBtn.classList.add('pet-hop');
+
+        const heart = document.createElement('span');
+        heart.className = 'float-heart';
+        heart.textContent = '♥';
+        avatarBtn.appendChild(heart);
+        setTimeout(() => heart.remove(), 900);
+
+        playChime([659.25, 783.99]);
+        const now = Date.now();
+        if (now - lastPatTime > 5000) {
+          lastPatTime = now;
+          addPetXP(2);
+          saveState();
+          renderGardenAndPet();
+          renderPlantAndMiniPet();
+        }
+      }
+
+      function switchToTab(target) {
+        document.querySelectorAll('.nav-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === target));
+        ['desk', 'garden', 'review'].forEach(t => {
+          document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== target);
+        });
+        if (target === 'garden') renderGardenAndPet();
+        if (target === 'review') renderReview();
+      }
+
+      /* ================= Event Binding ================= */
+      function bindEvents() {
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+          btn.addEventListener('click', () => switchToTab(btn.dataset.tab));
+        });
+        document.getElementById('btn-go-garden').addEventListener('click', () => switchToTab('garden'));
+        document.getElementById('desk-pet-mini-svg').addEventListener('click', () => switchToTab('garden'));
+
+        // Theme & Rain
+        document.getElementById('btn-theme').addEventListener('click', () => {
+          state.theme = state.theme === 'dark' ? 'light' : 'dark';
+          saveState();
+          applyTheme();
+        });
+        document.getElementById('btn-rain').addEventListener('click', toggleRain);
+        document.getElementById('btn-overlay-rain').addEventListener('click', toggleRain);
+
+        // Quote edit
+        document.getElementById('btn-quote-edit').addEventListener('click', () => {
+          document.getElementById('quote-input').value = state.quote;
+          document.getElementById('quote-display').classList.add('hidden');
+          document.getElementById('quote-form').classList.remove('hidden');
+          document.getElementById('quote-input').focus();
+        });
+        document.getElementById('btn-quote-cancel').addEventListener('click', () => {
+          document.getElementById('quote-form').classList.add('hidden');
+          document.getElementById('quote-display').classList.remove('hidden');
+        });
+        document.getElementById('quote-form').addEventListener('submit', e => {
+          e.preventDefault();
+          const val = document.getElementById('quote-input').value.trim();
+          if (val) { state.quote = val; saveState(); renderQuote(); }
+          document.getElementById('quote-form').classList.add('hidden');
+          document.getElementById('quote-display').classList.remove('hidden');
+        });
+
+        // New Slot
+        document.getElementById('btn-toggle-new-slot').addEventListener('click', () => {
+          const panel = document.getElementById('new-slot-panel');
+          panel.classList.toggle('hidden');
+          if (!panel.classList.contains('hidden')) document.getElementById('new-slot-name').focus();
+        });
+        document.getElementById('btn-close-new-slot').addEventListener('click', () => {
+          document.getElementById('new-slot-panel').classList.add('hidden');
+        });
+        document.getElementById('new-slot-colors').addEventListener('click', e => {
+          const btn = e.target.closest('[data-color]');
+          if (!btn) return;
+          newSlotColor = btn.dataset.color;
+          renderNewSlotColors();
+        });
+        document.getElementById('new-slot-panel').addEventListener('submit', e => {
+          e.preventDefault();
+          const nameEl = document.getElementById('new-slot-name');
+          const name = nameEl.value.trim();
+          if (!name) { toast('請輸入時段名稱'); return; }
+          const slots = ensureTodaySlots();
+          const newId = uid('slot');
+          slots.push({ id: newId, name, color: newSlotColor });
+          nameEl.value = '';
+          document.getElementById('new-slot-panel').classList.add('hidden');
+          saveState();
+          renderSlotsAndTasks();
+          document.getElementById('task-slot-select').value = newId;
+          toast(`已新增時段「${name}」`);
+        });
+
+        // Presets
+        document.getElementById('preset-study-home').addEventListener('click', () => {
+          state.dailySlots[getLocalDateStr()] = [
+            { id: 'slot_self_study', name: 'Self Study', color: 'yellow' },
+            { id: 'slot_home', name: 'Home', color: 'green' }
+          ];
+          editingSlotId = null;
+          saveState();
+          renderSlotsAndTasks();
+          toast('已套用「自修 + 回家」時段組合');
+        });
+        document.getElementById('preset-evening').addEventListener('click', () => {
+          state.dailySlots[getLocalDateStr()] = [
+            { id: 'slot_sprint', name: '晚間衝刺', color: 'coral' },
+            { id: 'slot_review', name: '睡前整理', color: 'purple' }
+          ];
+          editingSlotId = null;
+          saveState();
+          renderSlotsAndTasks();
+          toast('已套用「晚間衝刺」時段組合');
+        });
+
+        // Add Task
+        document.getElementById('task-form').addEventListener('submit', e => {
+          e.preventDefault();
+          const inp = document.getElementById('task-input');
+          const title = inp.value.trim();
+          if (!title) { toast('請先輸入活動內容'); return; }
+          const tasks = getTodayTasks();
+          if (tasks.length >= MAX_DAILY_TASKS) {
+            toast(`今日核心活動上限為 ${MAX_DAILY_TASKS} 項，保持聚焦！`);
+            return;
+          }
+          const slots = ensureTodaySlots();
+          const slotId = document.getElementById('task-slot-select').value || slots[0].id;
+          tasks.push({ id: uid('task'), title, slotId, done: false });
+          inp.value = '';
+          saveState();
+          renderSlotsAndTasks();
+        });
+
+        // Boss Banner Actions
+        document.getElementById('boss-banner').addEventListener('click', e => {
+          const hpBtn = e.target.closest('[data-set-boss-hp]');
+          const boss = getTodayBoss();
+          if (hpBtn && boss) {
+            const newMax = Number(hpBtn.dataset.setBossHp);
+            const spent = Math.max(0, (boss.bossMaxHp || 90) - (boss.bossHp ?? 90));
+            boss.bossMaxHp = newMax;
+            boss.bossHp = Math.max(0, newMax - spent);
+            saveState();
+            renderBossBanner();
+            return;
+          }
+          if (e.target.id === 'btn-fight-boss' && boss) {
+            document.getElementById('focus-custom-task').value = '';
+            document.getElementById('focus-task-select').value = boss.id;
+            startFocus(30, boss.id);
+          }
+        });
+
+        // Slot & Task delegation
+        document.getElementById('slot-list').addEventListener('click', e => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          const slots = ensureTodaySlots();
+          const tasks = getTodayTasks();
+
+          if (action === 'toggle-task') {
+            const t = tasks.find(x => x.id === id);
+            if (t) {
+              t.done = !t.done;
+              if (t.done && t.isBoss && !t.bossDefeated) {
+                t.bossHp = 0;
+                t.bossDefeated = true;
+                state.pet.treats += 2;
+                toast('🏆 擊破今日 Boss！獲得 +2 寵物零食');
+                playChime([523.25, 659.25, 783.99, 1046.5]);
+              }
+              saveState();
+              renderSlotsAndTasks();
+              renderPlantAndMiniPet();
+            }
+          } else if (action === 'toggle-boss') {
+            const t = tasks.find(x => x.id === id);
+            if (!t) return;
+            const willSet = !t.isBoss;
+            tasks.forEach(x => { x.isBoss = false; });
+            if (willSet) {
+              t.isBoss = true;
+              t.bossMaxHp = t.bossMaxHp || 90;
+              t.bossHp = t.bossHp ?? t.bossMaxHp;
+              toast(`⚔ 已將「${t.title}」設為今日 Boss！`);
+            }
+            saveState();
+            renderSlotsAndTasks();
+          } else if (action === 'delete-task') {
+            const idx = tasks.findIndex(x => x.id === id);
+            if (idx >= 0) { tasks.splice(idx, 1); saveState(); renderSlotsAndTasks(); }
+          } else if (action === 'edit-slot') {
+            editingSlotId = editingSlotId === id ? null : id;
+            renderSlotsAndTasks();
+          } else if (action === 'cancel-slot') {
+            editingSlotId = null;
+            renderSlotsAndTasks();
+          } else if (action === 'recolor-slot') {
+            const sl = slots.find(x => x.id === id);
+            if (sl) { sl.color = btn.dataset.color; saveState(); renderSlotsAndTasks(); }
+          } else if (action === 'save-slot') {
+            const sl = slots.find(x => x.id === id);
+            const inp = document.querySelector(`[data-edit-name="${id}"]`);
+            const val = inp ? inp.value.trim() : '';
+            if (sl && val) { sl.name = val; editingSlotId = null; saveState(); renderSlotsAndTasks(); }
+          } else if (action === 'move-slot') {
+            const idx = slots.findIndex(x => x.id === id);
+            const dir = Number(btn.dataset.dir);
+            const targetIdx = idx + dir;
+            if (idx >= 0 && targetIdx >= 0 && targetIdx < slots.length) {
+              [slots[idx], slots[targetIdx]] = [slots[targetIdx], slots[idx]];
+              saveState();
+              renderSlotsAndTasks();
+            }
+          } else if (action === 'delete-slot') {
+            if (slots.length <= 1) { toast('至少需保留一個時段'); return; }
+            const idx = slots.findIndex(x => x.id === id);
+            if (idx >= 0) {
+              slots.splice(idx, 1);
+              tasks.forEach(t => { if (t.slotId === id) t.slotId = slots[0].id; });
+              editingSlotId = null;
+              saveState();
+              renderSlotsAndTasks();
+              toast('已刪除時段，原有任務已保留至其他時段');
+            }
+          }
+        });
+
+        // Harvest plant
+        document.getElementById('btn-harvest').addEventListener('click', () => {
+          const p = state.currentPlant;
+          if (p.minutes < PLANT_MATURE_MINS) return;
+          const sp = SPECIES.find(x => x.id === p.speciesId) || SPECIES[0];
+          state.garden.push({ id: uid('plt'), speciesId: sp.id, name: sp.name, minutes: p.minutes, harvestedAt: getLocalDateStr() });
+          state.currentPlant = { speciesId: sp.id, minutes: 0, nutrition: 88, overworkStreak: 0 };
+          state.pet.treats += 2;
+          saveState();
+          renderHeader();
+          renderPlantAndMiniPet();
+          toast(`🌻 已收成「${sp.name}」並額外獲得 2 份寵物零食！`);
+        });
+
+        // Interactive Pet Controls
+        document.getElementById('pet-avatar-btn').addEventListener('click', patPet);
+        document.getElementById('btn-pet-pat').addEventListener('click', patPet);
+        document.getElementById('btn-pet-feed').addEventListener('click', () => {
+          if (state.pet.treats <= 0) {
+            toast('零食已經食晒啦！完成專注即可獲得更多零食');
+            return;
+          }
+          state.pet.treats -= 1;
+          addPetXP(25);
+          saveState();
+          document.getElementById('pet-bubble').textContent = '好好味呀！我又有力量陪你溫書啦～';
+          patPet();
+          renderGardenAndPet();
+          renderPlantAndMiniPet();
+        });
+        document.getElementById('pet-type-row').addEventListener('click', e => {
+          const b = e.target.closest('[data-pet-type]');
+          if (!b) return;
+          state.pet.type = b.dataset.petType;
+          saveState();
+          renderGardenAndPet();
+          renderPlantAndMiniPet();
+        });
+        document.getElementById('pet-acc-row').addEventListener('click', e => {
+          const b = e.target.closest('[data-pet-acc]');
+          if (!b || b.disabled) return;
+          state.pet.accessory = b.dataset.petAcc;
+          saveState();
+          renderGardenAndPet();
+          renderPlantAndMiniPet();
+        });
+
+        // Seed selection
+        document.getElementById('seed-grid').addEventListener('click', e => {
+          const card = e.target.closest('[data-select-species]');
+          if (!card) return;
+          state.currentPlant.speciesId = card.dataset.selectSpecies;
+          saveState();
+          renderPlantAndMiniPet();
+          renderGardenAndPet();
+          toast('已更換書桌植物品種');
+        });
+
+        // Focus start
+        document.querySelectorAll('.focus-btn').forEach(btn => {
+          btn.addEventListener('click', () => startFocus(Number(btn.dataset.mins)));
+        });
+        document.getElementById('btn-start-custom').addEventListener('click', () => {
+          const val = Math.min(180, Math.max(5, Number(document.getElementById('custom-mins-input').value) || 45));
+          startFocus(val);
+        });
+
+        // Overlay Flow / Break / Abort controls
+        document.getElementById('btn-enter-break-now').addEventListener('click', () => settleFocusAndBreak(0));
+        document.getElementById('btn-start-flow').addEventListener('click', enterFlowExtension);
+        document.getElementById('btn-stop-flow').addEventListener('click', () => {
+          const extraSecs = Math.max(0, Math.floor((Date.now() - overtimeStartAt) / 1000));
+          const extraMins = Math.round(extraSecs / 60);
+          settleFocusAndBreak(extraMins);
+        });
+        document.getElementById('btn-finish-break').addEventListener('click', () => {
+          endOverlay();
+          toast('已回到書桌');
+        });
+
+        document.getElementById('btn-abort-open').addEventListener('click', () => {
+          const panel = document.getElementById('abort-panel');
+          const willOpen = panel.classList.toggle('hidden');
+          if (!willOpen) {
+            updateOverlayPet('puzzled', '咦？真係要中途停低嗎？');
+          } else {
+            updateOverlayPet('study', '繼續專注，我陪住你！');
+          }
+        });
+        document.getElementById('btn-abort-cancel').addEventListener('click', () => {
+          document.getElementById('abort-panel').classList.add('hidden');
+          updateOverlayPet('study', '好彩冇放棄，繼續加油！');
+        });
+        document.getElementById('abort-reason-grid').addEventListener('click', e => {
+          const pill = e.target.closest('[data-reason]');
+          if (!pill) return;
+          selectedAbortReason = pill.dataset.reason;
+          document.querySelectorAll('#abort-reason-grid .reason-pill').forEach(p => p.classList.toggle('selected', p === pill));
+        });
+        document.getElementById('btn-abort-confirm').addEventListener('click', () => {
+          if (!selectedAbortReason) {
+            toast('請先點選一個中斷原因，方便日後復盤改善');
+            return;
+          }
+          const phrase = document.getElementById('abort-phrase-input').value.trim();
+          if (phrase !== '我確認中斷專注') {
+            toast('請完整輸入「我確認中斷專注」');
+            return;
+          }
+          abortFocusSession();
+        });
+
+        // AI Cam
+        document.getElementById('btn-toggle-cam').addEventListener('click', toggleCamera);
+
+        // Daily Review
+        document.getElementById('btn-rev-prev').addEventListener('click', () => { reviewDate = addDays(reviewDate, -1); renderReview(); });
+        document.getElementById('btn-rev-next').addEventListener('click', () => { reviewDate = addDays(reviewDate, 1); renderReview(); });
+
+        function saveCurrentReview(showMsg) {
+          state.reviews[reviewDate] = {
+            q1: document.getElementById('rev-q1').value.trim(),
+            q2: document.getElementById('rev-q2').value.trim(),
+            q3: document.getElementById('rev-q3').value.trim()
+          };
+          saveState();
+          if (showMsg) { renderReview(); toast('已寫入復盤日記'); }
+        }
+        ['rev-q1', 'rev-q2', 'rev-q3'].forEach(id => {
+          document.getElementById(id).addEventListener('input', () => saveCurrentReview(false));
+        });
+        document.getElementById('review-form').addEventListener('submit', e => { e.preventDefault(); saveCurrentReview(true); });
+        document.getElementById('review-history').addEventListener('click', e => {
+          const card = e.target.closest('[data-jump-review]');
+          if (!card) return;
+          reviewDate = card.dataset.jumpReview;
+          renderReview();
+        });
+
+        // Storage & Settings Modal
+        function openStorageModal() {
+          const totalMins = state.sessions.filter(s => !s.interrupted).reduce((sum, s) => sum + (Number(s.minutes) || 0), 0);
+          document.getElementById('storage-summary').innerHTML =
+            `最後存檔：<strong>${state.lastSavedAt || '尚未'}</strong> ｜ 總專注 <strong>${totalMins} 分鐘</strong> ｜ 紀錄 <strong>${state.sessions.length} 筆</strong> ｜ 連擊 <strong>${computeCurrentStreak()} 日</strong>`;
+          document.getElementById('set-target-h').value = state.settings.targetHours;
+          document.getElementById('set-overwork-h').value = state.settings.overworkHours;
+          document.getElementById('set-break-m').value = state.settings.breakMinutes;
+          document.getElementById('set-ai-grace').value = state.settings.aiGraceSeconds;
+          document.getElementById('btn-reset-step2').classList.add('hidden');
+          document.getElementById('btn-confirm-import').classList.add('hidden');
+          document.getElementById('import-preview-msg').textContent = '';
+          pendingImportData = null;
+          document.getElementById('storage-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('btn-open-storage').addEventListener('click', openStorageModal);
+        document.getElementById('btn-save-status').addEventListener('click', openStorageModal);
+        document.getElementById('btn-close-storage').addEventListener('click', () => {
+          document.getElementById('storage-modal').classList.add('hidden');
+        });
+
+        document.getElementById('btn-export-json').addEventListener('click', () => {
+          const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `warmdesk-backup-${getLocalDateStr()}.json`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          toast('已下載備份檔案');
+        });
+
+        function previewImportText(txt) {
+          const msgEl = document.getElementById('import-preview-msg');
+          const confirmBtn = document.getElementById('btn-confirm-import');
+          try {
+            const norm = normalizeState(JSON.parse(txt));
+            pendingImportData = norm;
+            msgEl.textContent = `格式正確：包含 ${norm.sessions.length} 筆專注紀錄、${norm.garden.length} 盆植物、寵物 Lv.${norm.pet.level}。`;
+            confirmBtn.classList.remove('hidden');
+          } catch (e) {
+            pendingImportData = null;
+            msgEl.textContent = 'JSON 格式錯誤，請確認檔案內容是否完整。';
+            confirmBtn.classList.add('hidden');
+          }
+        }
+
+        document.getElementById('file-import-json').addEventListener('change', e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            document.getElementById('paste-import-json').value = reader.result;
+            previewImportText(reader.result);
+          };
+          reader.readAsText(file);
+        });
+        document.getElementById('btn-preview-import').addEventListener('click', () => {
+          previewImportText(document.getElementById('paste-import-json').value.trim());
+        });
+        document.getElementById('btn-confirm-import').addEventListener('click', () => {
+          if (!pendingImportData) return;
+          state = pendingImportData;
+          evaluateStreakOnBoot();
+          saveState();
+          applyTheme();
+          renderAll();
+          document.getElementById('storage-modal').classList.add('hidden');
+          toast('已成功匯入存檔！');
+        });
+
+        document.getElementById('btn-save-settings').addEventListener('click', () => {
+          state.settings.targetHours = Math.min(12, Math.max(1, Number(document.getElementById('set-target-h').value) || 3));
+          state.settings.overworkHours = Math.min(16, Math.max(2, Number(document.getElementById('set-overwork-h').value) || 7));
+          state.settings.breakMinutes = Math.min(60, Math.max(1, Number(document.getElementById('set-break-m').value) || 10));
+          state.settings.aiGraceSeconds = Math.min(60, Math.max(5, Number(document.getElementById('set-ai-grace').value) || 15));
+          evaluateStreakOnBoot();
+          saveState();
+          renderHeader();
+          renderPlantAndMiniPet();
+          toast('已保存書桌設定');
+        });
+
+        document.getElementById('btn-reset-step1').addEventListener('click', () => {
+          document.getElementById('btn-reset-step2').classList.remove('hidden');
+        });
+        document.getElementById('btn-reset-step2').addEventListener('click', () => {
+          state = defaultState();
+          saveState();
+          applyTheme();
+          renderAll();
+          document.getElementById('storage-modal').classList.add('hidden');
+          toast('已重設全部資料');
+        });
+
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && timerMode) tickTimer();
+        });
+      }
+
+      function renderAll() {
+        renderHeader();
+        renderQuote();
+        renderNewSlotColors();
+        renderSlotsAndTasks();
+        renderPlantAndMiniPet();
+      }
+
+      loadState();
+      evaluateStreakOnBoot();
+      applyTheme();
+      bindEvents();
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
